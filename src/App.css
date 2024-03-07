@@ -36,3 +36,21 @@
     transform: rotate(360deg);
   }
 }
+
+.modal-box{
+  background: #fff;
+  width: 1000px;
+  margin-top:10%;
+  padding: 3em;
+  border-radius: 5px;
+  box-shadow: 1px 1px 5px #0000006b;
+}
+
+.form-row{
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+
+.modal-alert{
+  width:100%;
+}
