@@ -1,99 +1,38 @@
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from "../store/store";
-import { contactsSelector, fetchContacts } from "../store/contactsSlice";
-import React, { useEffect } from "react"; // Import the useEffect hook
-import { Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import React from "react"; // Import the useEffect hook
+import ContactsTableComponent from "../components/ContactsTable/ContactsTableComponent";
+import { Box, Button, Container, Grid, Typography } from "@mui/material";
+import './ContactsPage.css';
+import { useDispatch } from "react-redux";
+import { EditType, showEdit } from '../store/editSlice'
+import { AddNewType, showAddNew } from "../store/addNewSlice";
 
-interface ContactsProps {
-        
-}
 
-interface Column {
-        id: 'name' | 'email' | 'phone' | 'location' | 'type' | 'contact_method' | 'last_contacted';
-        label: string;
-        minWidth?: number;
-        align?: 'right';
-        format?: (value: number) => string;
-}
 
-const columns: readonly Column[] = [
-        { id: 'name', label: 'Name', minWidth: 170 },
-        { id: 'email', label: 'Email', minWidth: 100 },
-        { id: 'phone', label: 'Phone', minWidth: 170 },
-        { id: 'location', label: 'Location', minWidth: 170 },
-        { id: 'type', label: 'Type', minWidth: 170 },
-        { id: 'contact_method', label: 'Primary Contact Method', minWidth: 170 },
-        { id: 'last_contacted', label: 'Last Contacted', minWidth: 170 },
-]
-
-const ContactsPage: React.FC<ContactsProps> = () => {
+const ContactsPage: React.FC = () => {
 
         const dispatch = useDispatch();
-        const appDispatch = useDispatch<AppDispatch>()
-        const selector = useSelector(contactsSelector)
 
-        useEffect(() => { 
-                appDispatch(fetchContacts(1))
-        }, []) 
+        const showEditForm = () => {
+                dispatch(showEdit(EditType.Contacts))
+        }
+
+        const showAddNewForm = () =>{
+                dispatch(showAddNew(AddNewType.Contacts))
+        }
+
 
         return (
-                <div>
-                        <h1>Contacts</h1>
-                        <TableContainer sx={{maxHeight: 600}}>
-                                <Table stickyHeader aria-label="sticky table">
-                                        <TableHead>
-                                                <TableRow>
-                                                {columns.map((column) => (
-                                                        <TableCell
-                                                        key={column.id}
-                                                        align={column.align}
-                                                        style={{ minWidth: column.minWidth }}
-                                                        >
-                                                        {column.label}
-                                                        </TableCell>
-                                                ))}
-                                                </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                                {selector.contacts
-                                                .map((row) => {
-                                                        return (
-                                                        <TableRow hover role="checkbox" tabIndex={-1} key={row.uuid}>
-                                                                <TableCell>
-                                                                        {row.firstName} {row.lastName}
-                                                                </TableCell>
-                                                                <TableCell>
-                                                                        {row.email}
-                                                                </TableCell>
-                                                                <TableCell>
-                                                                        {row.countryPhoneAreaCode}
-                                                                        {row.phone}
-                                                                </TableCell>
-                                                                <TableCell>
-                                                                        {row.streetAddress}, {row.city}, {row.province}, {row.country}
-                                                                </TableCell>
-                                                                <TableCell>
-                                                                        {row.contact_type}
-                                                                </TableCell>
-                                                                <TableCell>
-                                                                        {row.contactMethod}
-                                                                </TableCell>
-                                                                <TableCell>
-                                                                        {row.lastContacted}
-                                                                </TableCell>   
-                                                        </TableRow>
-                                                        );
-                                                })}
-                                        </TableBody>
-                                </Table>
-
-                        </TableContainer>
-                        {/* <ul>
-                                {selector.contacts.contacts.map((contact, index) => {
-                                        return <li key={index}>{contact.firstName}</li>
-                                })}
-                        </ul> */}
-                </div>
+                <Container sx={{marginTop : "64px"}}>
+                        <Box className="page-header-box">
+                                <Typography variant="h5" align="left" gutterBottom>
+                                        Contacts
+                                </Typography>
+                                <Grid container justifyContent="end">
+                                        <Button variant="outlined" onClick={() => showAddNewForm()}>Add New Contact</Button>
+                                </Grid>
+                        </Box>
+                        <ContactsTableComponent />
+                </Container>
                 
         )
 }
