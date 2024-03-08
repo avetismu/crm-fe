@@ -61,6 +61,13 @@ const columns: GridColDef[] = [
         headerName: 'Type',
         description: 'type',
         sortable: false,
+        minWidth: 120
+    },
+    {
+        field: 'lastContact',
+        headerName: 'Last Contacted',
+        description: 'last contacted',
+        sortable: true,
         minWidth: 160
     }
 
