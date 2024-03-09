@@ -5,6 +5,7 @@ import { CreateContactDTO } from './dto/create.contact.dto';
 const BASE_URL = process.env.REACT_APP_API;
 const GET_CONTACTS_ALL = '/contacts/all';
 const CREATE_CONTACT = '/contacts/create';
+const DELETE_CONTACT = '/contacts/'
 
 export const enum API_STATE {
     LOADING = 'loading',
@@ -33,5 +34,14 @@ export const createContactAsync = async (contact : Contact) => {
         return response.data;
     } catch (error) {
         throw new Error('Failed to create contact.');
+    }
+}
+
+export const deleteSelectedContactAsync = async (contact : Contact) => {
+    try {
+        const response = await userAPI.delete(DELETE_CONTACT + `${contact.uuid}`);
+        return response.data;
+    } catch (error) {
+        throw new Error('Failed to delete contact.');
     }
 }

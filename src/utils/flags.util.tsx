@@ -2,7 +2,7 @@ import React from 'react';
 
 
 interface FlagProps {
-    countryCode: string;
+    countryCode: string | undefined | null;
 }
 
 const Flag: React.FC<FlagProps> = ({ countryCode }) => {
