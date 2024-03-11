@@ -1,4 +1,4 @@
-import { Alert, Autocomplete, Box, Divider, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material';
+import { Alert, Autocomplete, AutocompleteChangeReason, Box, Divider, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { Contact } from '../../../models/Contact';
 import { countries } from '../../../utils/CountryAutocompleteOptions';
@@ -8,12 +8,34 @@ import { useDispatch, useSelector } from 'react-redux';
 import { contactsSelector, setNewContact } from '../../../store/contactsSlice';
 import { CountryCode } from '../../../models/CountryCode.enum';
 import { API_STATE } from '../../../store/api';
+import { companiesSelector, getCompaniesByName } from '../../../store/companiesSlice';
+import { Company } from '../../../models/Company';
+import { AppDispatch } from '../../../store/store';
 
 const AddNewContactComponent: React.FC = () => {
 
     const dispatch = useDispatch();
+    const appDispatch = useDispatch<AppDispatch>();
     const selector = useSelector(contactsSelector);
+    const CompaniesSelector = useSelector(companiesSelector);
     const newContact = selector.newContact;
+
+    let options : any[] = CompaniesSelector.companiesByName.map((result: Company) => {
+    
+        return {
+          id: result.uuid, 
+          label: result.companyName
+        }
+    
+      })
+
+    const handleOnChange = (event: any, value: any, reason: AutocompleteChangeReason) => {
+    if (reason === 'selectOption') {
+        newContact.company = CompaniesSelector.companiesByName.find((result: any) => result.uuid === value.id)
+
+        dispatch(setNewContact(newContact))
+    }
+    }
 
 
     return (
@@ -79,6 +101,22 @@ const AddNewContactComponent: React.FC = () => {
                     multiline
                     />
                 </Grid>
+                <Grid md={6}>
+                <Autocomplete
+                    className='property-search-form'
+                    disablePortal
+                    options={options}
+                    loading={CompaniesSelector.getCompaniesByNameState === API_STATE.LOADING}
+                    noOptionsText='No Companies'
+                    sx={{ width: 300 }}
+                    renderInput={(params) => <TextField {...params} label="Search Company by Name" />}
+                    onInputChange={(event, newValue) => appDispatch(getCompaniesByName(newValue))}
+                    isOptionEqualToValue={(option, value) => option.value === value.value}
+                    onChange={handleOnChange}
+                    />
+                </Grid>
+            </Grid>
+            <Grid container className="form-row">
                 <Grid md={3}>
                     <FormControl fullWidth sx={{maxWidth:'85%'}}>
                         <InputLabel id="contact-type-label">Contact Type</InputLabel>

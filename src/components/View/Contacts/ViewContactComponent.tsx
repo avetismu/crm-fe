@@ -54,6 +54,22 @@ const ViewContactComponent: React.FC<ViewContactComponentProps> = () => {
                     <Grid md={12} container className='information-row'>
                         <Grid md={6}>
                             <Typography variant='body2'>
+                                Company
+                            </Typography>
+                        </Grid>
+                        <Grid md={6} >
+                            <Typography variant='body1'>
+                                {selector.selectedContact?.company?.companyName}
+                            </Typography>
+                            <Typography variant='body2'>
+                                {selector.selectedContact?.company?.streetAddress}, {selector.selectedContact?.company?.city}, {selector.selectedContact?.company?.province}, {countries.find((country) => country.code === selector.selectedContact?.company?.country)?.label}
+                            </Typography>
+                            <Flag countryCode={selector.selectedContact?.company?.country}/>
+                        </Grid>
+                    </Grid>
+                    <Grid md={12} container className='information-row'>
+                        <Grid md={6}>
+                            <Typography variant='body2'>
                                 Address
                             </Typography>
                         </Grid>
