@@ -1,23 +1,23 @@
 import React from "react"; // Import the useEffect hook
-import ContactsTableComponent from "../components/ContactsTable/ContactsTableComponent";
+import ContactsTableComponent from "../../components/ContactsTable/ContactsTableComponent";
 import { Box, Button, Container, Grid, Typography } from "@mui/material";
-import './ContactsPage.css';
 import { useDispatch } from "react-redux";
-import { EditType, showEdit } from '../store/editSlice'
-import { AddNewType, showAddNew } from "../store/addNewSlice";
+import { EditType, showEdit } from '../../store/editSlice'
+import { AddNewType, showAddNew } from "../../store/addNewSlice";
+import CompanyTableComponent from "../../components/CompaniesTable/CompaniesTable";
 
 
 
-const ContactsPage: React.FC = () => {
+const CompaniesPage: React.FC = () => {
 
         const dispatch = useDispatch();
 
         const showEditForm = () => {
-                dispatch(showEdit(EditType.Contacts))
+                dispatch(showEdit(EditType.Companies))
         }
 
         const showAddNewForm = () =>{
-                dispatch(showAddNew(AddNewType.Contacts))
+                dispatch(showAddNew(AddNewType.Companies))
         }
 
 
@@ -25,16 +25,16 @@ const ContactsPage: React.FC = () => {
                 <Container sx={{marginTop : "64px"}}>
                         <Box className="page-header-box">
                                 <Typography variant="h5" align="left" gutterBottom>
-                                        Contacts
+                                        Companies
                                 </Typography>
                                 <Grid container justifyContent="end">
-                                        <Button variant="outlined" onClick={() => showAddNewForm()}>Add New Contact</Button>
+                                        <Button variant="outlined" onClick={() => showAddNewForm()}>Add New Company</Button>
                                 </Grid>
                         </Box>
-                        <ContactsTableComponent />
+                        <CompanyTableComponent />
                 </Container>
                 
         )
 }
 
-export default ContactsPage
+export default CompaniesPage

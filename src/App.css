@@ -54,3 +54,8 @@
 .modal-alert{
   width:100%;
 }
+
+.page-header-box{
+  padding-top: 2em;
+  padding-bottom: 1em;
+}

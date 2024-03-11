@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '../../store/store';
-import { contactsSelector, fetchContacts } from '../../store/contactsSlice';
-import { DataGrid, GridColDef, GridRenderCellParams, GridTreeNodeWithRender, GridValueGetterParams } from '@mui/x-data-grid';
+import { contactsSelector, fetchContacts, setSelectedContact } from '../../store/contactsSlice';
+import { DataGrid, GridCallbackDetails, GridColDef, GridEventListener, GridRenderCellParams, GridRowParams, GridTreeNodeWithRender, GridValueGetterParams, MuiEvent } from '@mui/x-data-grid';
 import Flag from '../../utils/flags.util'
 import { Box, Grid, Typography } from '@mui/material';
 import getCountryPhoneAreaCode from '../../utils/countryPhoneAreaCode';
+import { ViewType, showView } from '../../store/viewSlice';
 
 interface Column {
     id: 'name' | 'email' | 'phone' | 'location' | 'type' | 'contact_method' | 'last_contacted';
@@ -61,7 +62,16 @@ const columns: GridColDef[] = [
         headerName: 'Type',
         description: 'type',
         sortable: false,
-        minWidth: 160
+        minWidth: 120
+    },
+    {
+        field: 'lastContact',
+        headerName: 'Last Contacted',
+        description: 'last contacted',
+        sortable: true,
+        minWidth: 160,
+        valueGetter: (params: GridValueGetterParams) =>
+        ` ${new Date(params.row.lastContact).toLocaleDateString('en-CA') || ''}`
     }
 
   ];
@@ -76,12 +86,22 @@ const ContactTableComponent: React.FC = ({}) => {
             appDispatch(fetchContacts(1))
     }, []) 
 
+    const handleRowClick = (
+        params : GridRowParams,
+        event : MuiEvent<React.MouseEvent<HTMLElement>>,
+        details : GridCallbackDetails
+        ) => {
+            dispatch(setSelectedContact(params.row.uuid));
+            dispatch(showView(ViewType.Contacts))
+    }
+
     
     return (
         <DataGrid
             getRowId={(row) => row.uuid}
             rows={selector.contacts}
             columns={columns}
+            onRowClick={handleRowClick}
             initialState={{
             pagination: {
                 paginationModel: {
