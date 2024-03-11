@@ -36,7 +36,8 @@ export const editSelector = (state: RootState) => state.edit;
 /* Edit Component enum */
 
 export enum EditType {
-    Contacts
+    Contacts,
+    Companies
 }
 
 const getTitle = (editType : EditType | undefined) : string | undefined => {
@@ -47,6 +48,8 @@ const getTitle = (editType : EditType | undefined) : string | undefined => {
     switch(editType){
         case EditType.Contacts:
             return 'Contacts'
+        case EditType.Companies:
+            return 'Companies'
         default:
             return undefined
     }

@@ -7,25 +7,23 @@ import Flag from '../../utils/flags.util'
 import { Box, Grid, Typography } from '@mui/material';
 import getCountryPhoneAreaCode from '../../utils/countryPhoneAreaCode';
 import { ViewType, showView } from '../../store/viewSlice';
+import { companiesSelector, fetchCompanies, setSelectedCompany } from '../../store/companiesSlice';
+
+interface Column {
+    id: 'name' | 'email' | 'phone' | 'location' | 'type' | 'contact_method' | 'last_contacted';
+    label: string;
+    minWidth?: number;
+    align?: 'right';
+    format?: (value: number) => string;
+}
 
 const columns: GridColDef[] = [
     {
-      field: 'fullName',
-      headerName: 'Name',
-      description: 'First name and last name',
+      field: 'companyName',
+      headerName: 'Company Name',
+      description: 'Company Name',
       sortable: true,
-      minWidth: 160,
-      valueGetter: (params: GridValueGetterParams) =>
-        ` ${params.row.lastName || ''}, ${params.row.firstName || ''}`
-    },
-    {
-        field: 'company',
-        headerName: 'Company',
-        description: 'company',
-        sortable: true,
-        width: 160,
-        valueGetter: (params: GridValueGetterParams) =>
-        ` ${params.row.company?.companyName || ''}`
+      minWidth: 160
     },
     {
         field: 'email',
@@ -77,14 +75,14 @@ const columns: GridColDef[] = [
 
   ];
 
-const ContactTableComponent: React.FC = ({}) => {
+const CompanyTableComponent: React.FC = ({}) => {
 
     const dispatch = useDispatch();
     const appDispatch = useDispatch<AppDispatch>()
-    const selector = useSelector(contactsSelector)
+    const selector = useSelector(companiesSelector)
 
     useEffect(() => { 
-            appDispatch(fetchContacts(1))
+            appDispatch(fetchCompanies(1))
     }, []) 
 
     const handleRowClick = (
@@ -92,15 +90,15 @@ const ContactTableComponent: React.FC = ({}) => {
         event : MuiEvent<React.MouseEvent<HTMLElement>>,
         details : GridCallbackDetails
         ) => {
-            dispatch(setSelectedContact(params.row.uuid));
-            dispatch(showView(ViewType.Contacts))
+            dispatch(setSelectedCompany(params.row.uuid));
+            dispatch(showView(ViewType.Companies))
     }
 
     
     return (
         <DataGrid
             getRowId={(row) => row.uuid}
-            rows={selector.contacts}
+            rows={selector.companies}
             columns={columns}
             onRowClick={handleRowClick}
             initialState={{
@@ -116,4 +114,4 @@ const ContactTableComponent: React.FC = ({}) => {
     );
 };
 
-export default ContactTableComponent;
+export default CompanyTableComponent;

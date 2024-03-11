@@ -30,7 +30,7 @@ export class CreateContactDTO {
         createContactDTO.last_name = contact.lastName;
         createContactDTO.description = contact.description;
         createContactDTO.email = contact.email;
-        //createContactDTO.company = contact.company;
+        createContactDTO.company = contact.company?.uuid;
         createContactDTO.country_phone_area_code = contact.countryPhoneAreaCode;
         createContactDTO.phone_number = contact.phoneNumber;
         createContactDTO.whatsapp_country_phone_area_code = contact.whatsappCountryPhoneAreaCode;
