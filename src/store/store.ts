@@ -10,7 +10,8 @@ const store = configureStore({
       contacts: contactsSlice,
       companies: companiesSlice,
       edit : editSlice,
-      addNew : addNewSlice
+      addNew : addNewSlice,
+      view : viewSlice
     },
       
   })

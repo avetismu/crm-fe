@@ -35,7 +35,7 @@ export const viewSelector = (state: RootState) => state.view;
 
 /* Edit Component enum */
 
-export enum ViewType {
+export enum ViewType 
     Contacts,
     Companies
 }

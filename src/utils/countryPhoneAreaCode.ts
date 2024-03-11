@@ -1,4 +1,7 @@
-function getCountryPhoneAreaCode(countryCode: string): string | undefined {
+function getCountryPhoneAreaCode(countryCode: string | null | undefined): string | undefined {
+
+    if(!countryCode) return undefined;
+    
     const countryPhoneCodes: Record<string, string> = {
 
         "AF": "+93",

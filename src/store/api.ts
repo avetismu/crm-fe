@@ -15,6 +15,7 @@ const GET_COMPANIES_BY_NAME = '/companies/by_name';
 const CREATE_COMPANY = '/companies/create';
 const DELETE_COMPANY = '/companies/'
 
+
 export const enum API_STATE {
     LOADING = 'loading',
     IDLE = 'idle',
@@ -45,7 +46,6 @@ export const createContactAsync = async (contact : Contact) => {
     } catch (error) {
         throw new Error('Failed to create contact.');
     }
-
 }
 
 export const deleteSelectedContactAsync = async (contact : Contact) => {
@@ -55,6 +55,7 @@ export const deleteSelectedContactAsync = async (contact : Contact) => {
     } catch (error) {
         throw new Error('Failed to delete contact.');
     }
+
 }
 
 export const fetchCompaniesAsync = async (page : Number) => {
@@ -92,5 +93,4 @@ export const deleteSelectCompanyAsync = async (company : Company) => {
     } catch (error) {
         throw new Error('Failed to delete contact.');
     }
-
 }
