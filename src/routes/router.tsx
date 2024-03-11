@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
-import ContactsPage from "../pages/ContactsPage";
+import ContactsPage from "../pages/Contacts/ContactsPage";
+import CompaniesPage from "../pages/Companies/ContactsPage";
 
 const Router = createBrowserRouter([
     {
@@ -9,6 +10,10 @@ const Router = createBrowserRouter([
     {
         path: "/contacts",
         element: <ContactsPage />
+    },
+    {
+        path: "/companies",
+        element: <CompaniesPage />
     }
   ]);
 

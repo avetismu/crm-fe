@@ -2,9 +2,13 @@ import { configureStore } from '@reduxjs/toolkit'
 import contactsSlice from './contactsSlice';
 import editSlice from './editSlice';
 import addNewSlice from './addNewSlice';
+import viewSlice from './viewSlice';
+import companiesSlice from './companiesSlice';
+
 const store = configureStore({
     reducer: {
       contacts: contactsSlice,
+      companies: companiesSlice,
       edit : editSlice,
       addNew : addNewSlice
     },
