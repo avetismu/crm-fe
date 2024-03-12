@@ -5,7 +5,6 @@ import { Alert, Divider, Grid, Typography } from '@mui/material';
 import getCountryPhoneAreaCode from '../../../utils/countryPhoneAreaCode';
 import { countries } from '../../../utils/CountryAutocompleteOptions';
 import Flag from '../../../utils/flags.util';
-import './ViewContact.css'
 import { API_STATE } from '../../../store/api';
 
 interface ViewContactComponentProps {
@@ -30,23 +29,13 @@ const ViewContactComponent: React.FC<ViewContactComponentProps> = () => {
                         </Typography>
                     </Grid>
                     <Grid md={12} container justifyContent='center'>
+                        <Typography variant='body1'>
+                            {selector.selectedContact?.description}
+                        </Typography>
+                    </Grid>
+                    <Grid md={12} container justifyContent='center'>
                         <Typography variant='body2'>
                             {selector.selectedContact?.email}
-                        </Typography>
-                    </Grid>
-                    <Grid md={12} container justifyContent='center'>
-                        <Typography variant='body2'>
-                            {`${getCountryPhoneAreaCode(selector.selectedContact?.countryPhoneAreaCode)|| ''} ${selector.selectedContact?.phoneNumber || ''}`}
-                        </Typography>
-                    </Grid>
-                    <Grid md={12} container justifyContent='center'>
-                        <Typography variant='body2'>
-                            {selector.selectedContact?.wechatId}
-                        </Typography>
-                    </Grid>
-                    <Grid md={12} container justifyContent='center'>
-                        <Typography variant='body2'>
-                            {selector.selectedContact?.description}
                         </Typography>
                     </Grid>
                 </Grid>
@@ -83,6 +72,19 @@ const ViewContactComponent: React.FC<ViewContactComponentProps> = () => {
                     <Grid md={12} container className='information-row'>
                         <Grid md={6}>
                             <Typography variant='body2'>
+                                Phone
+                            </Typography>
+                        </Grid>
+                        <Grid md={6} container>
+                            <Flag countryCode={selector.selectedContact?.countryPhoneAreaCode}/>
+                            <Typography variant='body2' sx={{marginLeft:'10px'}}>
+                                 {getCountryPhoneAreaCode(selector.selectedContact?.countryPhoneAreaCode)} {selector.selectedContact?.phoneNumber}
+                            </Typography>
+                        </Grid>
+                    </Grid>
+                    <Grid md={12} container className='information-row'>
+                        <Grid md={6}>
+                            <Typography variant='body2'>
                                 WeChat
                             </Typography>
                         </Grid>
@@ -99,9 +101,9 @@ const ViewContactComponent: React.FC<ViewContactComponentProps> = () => {
                             </Typography>
                         </Grid>
                         <Grid md={6} container>
-                            <Flag countryCode={selector.selectedContact?.countryPhoneAreaCode}/>
+                            <Flag countryCode={selector.selectedContact?.whatsappCountryPhoneAreaCode}/>
                             <Typography variant='body2' sx={{marginLeft:'10px'}}>
-                                 {getCountryPhoneAreaCode(selector.selectedContact?.countryPhoneAreaCode)} {selector.selectedContact?.phoneNumber}
+                                 {getCountryPhoneAreaCode(selector.selectedContact?.whatsappCountryPhoneAreaCode)} {selector.selectedContact?.whatsappNumber}
                             </Typography>
                         </Grid>
                     </Grid>

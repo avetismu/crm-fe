@@ -102,18 +102,18 @@ const AddNewContactComponent: React.FC = () => {
                     />
                 </Grid>
                 <Grid md={6}>
-                <Autocomplete
-                    className='property-search-form'
-                    disablePortal
-                    options={options}
-                    loading={CompaniesSelector.getCompaniesByNameState === API_STATE.LOADING}
-                    noOptionsText='No Companies'
-                    sx={{ width: 300 }}
-                    renderInput={(params) => <TextField {...params} label="Search Company by Name" />}
-                    onInputChange={(event, newValue) => appDispatch(getCompaniesByName(newValue))}
-                    isOptionEqualToValue={(option, value) => option.value === value.value}
-                    onChange={handleOnChange}
-                    />
+                    <Autocomplete
+                        className='company-search-form'
+                        disablePortal
+                        options={options}
+                        loading={CompaniesSelector.getCompaniesByNameState === API_STATE.LOADING}
+                        noOptionsText='No Companies'
+                        sx={{ width: 300 }}
+                        renderInput={(params) => <TextField {...params} label="Search Company by Name" />}
+                        onInputChange={(event, newValue) => appDispatch(getCompaniesByName(newValue))}
+                        isOptionEqualToValue={(option, value) => option.value === value.value}
+                        onChange={handleOnChange}
+                        />
                 </Grid>
             </Grid>
             <Grid container className="form-row">

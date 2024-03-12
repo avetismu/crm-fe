@@ -23,7 +23,7 @@ export class Company {
     contactMethod: ContactMethod | null | undefined;
     parentEntity: Company | null | undefined;
     subEntities: Company[] | null | undefined;
-    contact: Contact[] | null | undefined;
+    contacts: Contact[] | null | undefined;
     createdAt: Date | null | undefined;
     updatedAt: Date | null | undefined;
 }

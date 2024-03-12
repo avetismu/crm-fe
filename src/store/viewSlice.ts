@@ -47,6 +47,8 @@ const getTitle = (viewType: ViewType | undefined): string | undefined => {
     switch (viewType) {
         case ViewType.Contacts:
             return 'View Contact';
+        case ViewType.Companies:
+            return 'View Company';
         default:
             return undefined;
     }

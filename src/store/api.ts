@@ -38,9 +38,7 @@ export const fetchContactsAsync = async (page : Number) => {
 
 export const createContactAsync = async (contact : Contact) => {
     try {
-        console.log('contact', contact)
         const createContactDTO = CreateContactDTO.fromContact(contact);
-        console.log('createContactDTO', createContactDTO)
         const response = await userAPI.post(CREATE_CONTACT, createContactDTO);
         return response.data;
     } catch (error) {
@@ -88,8 +86,8 @@ export const createCompanyAsync = async (company : Company) => {
 
 export const deleteSelectCompanyAsync = async (company : Company) => {
     try {
-        //const response = await userAPI.delete(DELETE_CONTACT + `${contact.uuid}`);
-        //return response.data;
+        const response = await userAPI.delete(DELETE_COMPANY + `${company.uuid}`);
+        return response.data;
     } catch (error) {
         throw new Error('Failed to delete contact.');
     }
