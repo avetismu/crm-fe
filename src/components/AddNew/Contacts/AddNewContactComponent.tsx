@@ -11,6 +11,7 @@ import { API_STATE } from '../../../store/api';
 import { companiesSelector, getCompaniesByName } from '../../../store/companiesSlice';
 import { Company } from '../../../models/Company';
 import { AppDispatch } from '../../../store/store';
+import { ContactMethod } from '../../../models/ContactMethod.enum';
 
 const AddNewContactComponent: React.FC = () => {
 
@@ -117,7 +118,7 @@ const AddNewContactComponent: React.FC = () => {
                 </Grid>
             </Grid>
             <Grid container className="form-row">
-                <Grid md={3}>
+            <Grid md={3}>
                     <FormControl fullWidth sx={{maxWidth:'85%'}}>
                         <InputLabel id="contact-type-label">Contact Type</InputLabel>
                         <Select
@@ -135,6 +136,34 @@ const AddNewContactComponent: React.FC = () => {
                             <MenuItem value='SUPPLIER'>Supplier</MenuItem>
                             <MenuItem value='PARTNER'>Partner</MenuItem>
                             <MenuItem value='INVESTOR'>Investor</MenuItem>
+                        </Select>
+                    </FormControl>
+                </Grid>
+                <Grid md={4}>
+                    <FormControl fullWidth sx={{maxWidth:'85%'}}>
+                        <InputLabel id="contact-method-label">Preffered Contact Method</InputLabel>
+                        <Select
+                            labelId="contact-method-label"
+                            id="contact-method-select"
+                            label="Preferred Contact Method"
+                            onChange={(value)=>{
+                                newContact.contactMethod = value.target.value as ContactMethod;
+                                dispatch(setNewContact(newContact));
+                            }}
+                            value={newContact.contactType}
+                        >
+                            
+                            <MenuItem value='EMAIL'>Email</MenuItem>
+                            <MenuItem value='PHONE'>Phone</MenuItem>
+                            <MenuItem value='WHATSAPP'>WhatsApp</MenuItem>
+                            <MenuItem value='WECHAT'>WeChat</MenuItem>
+                            <MenuItem value='FACEBOOK'>Facebook</MenuItem>
+                            <MenuItem value='LINKEDIN'>LinkedIn</MenuItem>
+                            <MenuItem value='INSTAGRAM'>Instagram</MenuItem>
+                            <MenuItem value='TWITTER'>Twitter</MenuItem>
+                            <MenuItem value='WEBSITE'>Website</MenuItem>
+                            <MenuItem value='IN_PERSON'>In Person</MenuItem>
+                            <MenuItem value='OTHER'>Other</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>

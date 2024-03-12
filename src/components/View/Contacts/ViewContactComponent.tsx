@@ -7,6 +7,15 @@ import { countries } from '../../../utils/CountryAutocompleteOptions';
 import Flag from '../../../utils/flags.util';
 import { API_STATE } from '../../../store/api';
 
+import BusinessIcon from '@mui/icons-material/Business';
+import HomeIcon from '@mui/icons-material/Home';
+import PhoneIcon from '@mui/icons-material/Phone';
+import StarBorderPurple500Icon from '@mui/icons-material/StarBorderPurple500';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import ConnectWithoutContactIcon from '@mui/icons-material/ConnectWithoutContact';
+import AppSettingsAltIcon from '@mui/icons-material/AppSettingsAlt';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+
 interface ViewContactComponentProps {
 }
 
@@ -41,8 +50,9 @@ const ViewContactComponent: React.FC<ViewContactComponentProps> = () => {
                 </Grid>
                 <Grid md={6}>
                     <Grid md={12} container className='information-row'>
-                        <Grid md={6}>
-                            <Typography variant='body2'>
+                        <Grid md={6} container justifyContent='left'>
+                            <BusinessIcon sx={{width : '15px'}}/>
+                            <Typography variant='body2' sx={{marginLeft:1, marginTop:0.3}}>
                                 Company
                             </Typography>
                         </Grid>
@@ -57,12 +67,13 @@ const ViewContactComponent: React.FC<ViewContactComponentProps> = () => {
                         </Grid>
                     </Grid>
                     <Grid md={12} container className='information-row'>
-                        <Grid md={6}>
-                            <Typography variant='body2'>
+                        <Grid md={6} container justifyContent='left'>
+                            <HomeIcon sx={{width : '15px'}}/>
+                            <Typography variant='body2' sx={{marginLeft:1, marginTop:0.3}}>
                                 Address
                             </Typography>
                         </Grid>
-                        <Grid md={6} >
+                        <Grid md={6}>
                             <Typography variant='body1'>
                                 {selector.selectedContact?.streetAddress}, {selector.selectedContact?.city}, {selector.selectedContact?.province}, {countries.find((country) => country.code === selector.selectedContact?.country)?.label}
                             </Typography>
@@ -70,8 +81,9 @@ const ViewContactComponent: React.FC<ViewContactComponentProps> = () => {
                         </Grid>
                     </Grid>
                     <Grid md={12} container className='information-row'>
-                        <Grid md={6}>
-                            <Typography variant='body2'>
+                        <Grid md={6} container justifyContent='left'>
+                            <PhoneIcon sx={{width : '15px'}}/>
+                            <Typography variant='body2' sx={{marginLeft:1, marginTop:0.3}}>
                                 Phone
                             </Typography>
                         </Grid>
@@ -83,8 +95,9 @@ const ViewContactComponent: React.FC<ViewContactComponentProps> = () => {
                         </Grid>
                     </Grid>
                     <Grid md={12} container className='information-row'>
-                        <Grid md={6}>
-                            <Typography variant='body2'>
+                        <Grid md={6} container justifyContent='left'>
+                            <StarBorderPurple500Icon sx={{width : '15px'}}/>
+                            <Typography variant='body2' sx={{marginLeft:1, marginTop:0.3}}>
                                 WeChat
                             </Typography>
                         </Grid>
@@ -95,8 +108,9 @@ const ViewContactComponent: React.FC<ViewContactComponentProps> = () => {
                         </Grid>
                     </Grid>
                     <Grid md={12} container className='information-row'>
-                        <Grid md={6}>
-                            <Typography variant='body2'>
+                        <Grid md={6} container justifyContent='left'>
+                            <WhatsAppIcon sx={{width : '15px'}}/>
+                            <Typography variant='body2' sx={{marginLeft:1, marginTop:0.3}}>
                                 WhatsApp
                             </Typography>
                         </Grid>
@@ -108,8 +122,9 @@ const ViewContactComponent: React.FC<ViewContactComponentProps> = () => {
                         </Grid>
                     </Grid>
                     <Grid md={12} container className='information-row'>
-                        <Grid md={6}>
-                            <Typography variant='body2'>
+                        <Grid md={6} container justifyContent='left'>
+                            <ConnectWithoutContactIcon sx={{width : '15px'}}/>
+                            <Typography variant='body2' sx={{marginLeft:1, marginTop:0.3}}>
                                 Contact Type
                             </Typography>
                         </Grid>
@@ -120,8 +135,9 @@ const ViewContactComponent: React.FC<ViewContactComponentProps> = () => {
                         </Grid>
                     </Grid>
                     <Grid md={12} container className='information-row'>
-                        <Grid md={6}>
-                            <Typography variant='body2'>
+                        <Grid md={6} container justifyContent='left'>
+                            <AppSettingsAltIcon sx={{width : '15px'}}/>
+                            <Typography variant='body2' sx={{marginLeft:1, marginTop:0.3}}>
                                 Preferred Contact Method
                             </Typography>
                         </Grid>
@@ -132,8 +148,9 @@ const ViewContactComponent: React.FC<ViewContactComponentProps> = () => {
                         </Grid>
                     </Grid>
                     <Grid md={12} container className='information-row'>
-                        <Grid md={6}>
-                            <Typography variant='body2'>
+                        <Grid md={6} container justifyContent='left'>
+                            <CalendarTodayIcon sx={{width : '15px'}}/>
+                            <Typography variant='body2' sx={{marginLeft:1, marginTop:0.3}}>
                                 Last Contacted
                             </Typography>
                         </Grid>
