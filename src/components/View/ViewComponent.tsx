@@ -9,6 +9,9 @@ import { Contact } from '../../models/Contact';
 import ViewCompanyComponent from './Companies/ViewCompanyComponent';
 import { companiesSelector, deleteSelectedCompany } from '../../store/companiesSlice';
 import { Company } from '../../models/Company';
+import { EditType, showEdit } from '../../store/editSlice';
+import { setFormContact } from '../../store/contactFormSlice';
+import { setFormCompany } from '../../store/companyFormSlice';
 
 interface ViewComponentProps {
     // Define your props here
@@ -19,6 +22,7 @@ const ViewComponent: React.FC<ViewComponentProps> = (props) => {
     const dispatch = useDispatch();
     const appDispatch = useDispatch<AppDispatch>();
     const selector = useSelector(viewSelector)
+    
 
     const selectedContact = useSelector(contactsSelector).selectedContact as Contact
     const selectedCompany = useSelector(companiesSelector).selectedCompany as Company
@@ -43,6 +47,22 @@ const ViewComponent: React.FC<ViewComponentProps> = (props) => {
         }
     }
 
+    const editRecord = (viewType: ViewType | undefined) =>{
+        dispatch(hideView());
+        switch(viewType){
+            case ViewType.Contacts:
+                dispatch(showEdit(EditType.Contacts));
+                dispatch(setFormContact(Contact.toFormContact(selectedContact)))
+                break;
+            case ViewType.Companies:
+                dispatch(showEdit(EditType.Companies));
+                dispatch(setFormCompany(Company.toFormCompany(selectedCompany)))
+                break;
+        }
+    }
+
+
+
     return (
         <Modal open={selector.isVisible}> 
             <Fade in={selector.isVisible}>
@@ -57,7 +77,8 @@ const ViewComponent: React.FC<ViewComponentProps> = (props) => {
                             {getView(selector.type)}
                         </Grid>
                         <Grid container justifyContent="center" sx={{marginTop:2}}>
-                            <Button sx={{marginRight:1}}variant="outlined" color="error" onClick={() => deleteRecord(selector.type)}>Delete</Button>
+                            <Button sx={{marginRight:1}} variant="text" onClick={()=> editRecord(selector.type)}>Edit</Button>
+                            <Button sx={{marginRight:1}} variant="outlined" color="error" onClick={() => deleteRecord(selector.type)}>Delete</Button>
                             <Button variant="contained" onClick={()=>{dispatch(hideView())}}>Close</Button>
                         </Grid>
                     </Grid>
