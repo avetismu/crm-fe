@@ -47,9 +47,9 @@ const getTitle = (editType : EditType | undefined) : string | undefined => {
 
     switch(editType){
         case EditType.Contacts:
-            return 'Contacts'
+            return 'Edit Contact'
         case EditType.Companies:
-            return 'Companies'
+            return 'Edit Company'
         default:
             return undefined
     }

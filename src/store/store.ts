@@ -4,14 +4,18 @@ import editSlice from './editSlice';
 import addNewSlice from './addNewSlice';
 import viewSlice from './viewSlice';
 import companiesSlice from './companiesSlice';
+import contactFormSlice from './contactFormSlice';
+import companyFormSlice from './companyFormSlice';
 
 const store = configureStore({
     reducer: {
       contacts: contactsSlice,
       companies: companiesSlice,
       edit : editSlice,
+      contactForm : contactFormSlice,
       addNew : addNewSlice,
-      view : viewSlice
+      view : viewSlice,
+      companyForm : companyFormSlice
     },
       
   })

@@ -3,12 +3,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import {AddNewType, addNewSelector, hideAddNew} from '../../store/addNewSlice';
 import { Button, Divider, Fade, Grid, Modal, Typography } from '@mui/material';
 import AddNewContactComponent from './Contacts/AddNewContactComponent';
-import { createContact, contactsSelector } from '../../store/contactsSlice';
+
 import { AppDispatch, RootState } from '../../store/store';
-import { Contact } from '../../models/Contact';
 import AddNewCompanyComponent from './Companies/AddNewCompanyComponent';
-import { companiesSelector, createCompany } from '../../store/companiesSlice';
-import { Company } from '../../models/Company';
+import { createContact, formContactSelector } from '../../store/contactFormSlice';
+import { createCompany, formCompanySelector } from '../../store/companyFormSlice';
+import { contactsSelector } from '../../store/contactsSlice';
 
 interface AddNewComponentProps {
     // Define your props here
@@ -20,14 +20,14 @@ const AddNewComponent: React.FC<AddNewComponentProps> = (props) => {
     const appDispatch = useDispatch<AppDispatch>();
     const AddNewSelector = useSelector(addNewSelector)
 
-    const ContactsSelector = useSelector(contactsSelector)
-    const CompaniesSelector = useSelector(companiesSelector)
+    const FormContactSelector = useSelector(formContactSelector)
+    const FormCompanySelector = useSelector(formCompanySelector)
 
     const getNewForm = (addNewType: AddNewType | undefined): ReactNode => {
         switch(addNewType){
             case AddNewType.Contacts:
-                return <AddNewContactComponent/>
 
+                return <AddNewContactComponent/>
             case AddNewType.Companies:
                 return <AddNewCompanyComponent/>
         }
@@ -36,10 +36,10 @@ const AddNewComponent: React.FC<AddNewComponentProps> = (props) => {
     const submit = (addNewType: AddNewType | undefined) => {
         switch(addNewType){
             case AddNewType.Contacts:
-                appDispatch(createContact(ContactsSelector.newContact))
+                appDispatch(createContact(FormContactSelector.formContact))
                 break;
             case AddNewType.Companies:
-                appDispatch(createCompany(CompaniesSelector.newCompany))
+                appDispatch(createCompany(FormCompanySelector.formCompany))
         
         }
 
