@@ -7,7 +7,7 @@ import AddNewContactComponent from './Contacts/AddNewContactComponent';
 import { AppDispatch, RootState } from '../../store/store';
 import AddNewCompanyComponent from './Companies/AddNewCompanyComponent';
 import { createContact, formContactSelector, resetFormContact } from '../../store/contactFormSlice';
-import { createCompany, formCompanySelector } from '../../store/companyFormSlice';
+import { createCompany, formCompanySelector, resetFormCompany } from '../../store/companyFormSlice';
 import { contactsSelector } from '../../store/contactsSlice';
 
 interface AddNewComponentProps {
@@ -69,6 +69,7 @@ const AddNewComponent: React.FC<AddNewComponentProps> = (props) => {
                 dispatch(resetFormContact())
                 break;
             case AddNewType.Companies:
+                dispatch(resetFormCompany())
                 break;
         }
     }

@@ -103,6 +103,7 @@ const companyFormSlice = createSlice({
     name: 'companyForm',
     initialState,
     reducers: {
+        resetFormCompany: () => initialState,
         setFormCompany: (state, action) => {
             return {
                 ...state,
@@ -141,7 +142,7 @@ const companyFormSlice = createSlice({
     
 });
 
-export const { setFormCompany } = companyFormSlice.actions;
+export const { setFormCompany, resetFormCompany } = companyFormSlice.actions;
 export default companyFormSlice.reducer;
 
 export const formCompanySelector = (state: RootState) => state.companyForm
