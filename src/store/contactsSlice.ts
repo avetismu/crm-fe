@@ -1,22 +1,20 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "./store";
-import { API_STATE, createContactAsync, deleteSelectedContactAsync, fetchContactsAsync } from "./api";
+import { API_STATE, createContactAsync, deleteSelectedContactAsync, fetchContactsAsync, getContactByUUIDAsync } from "./api";
 import { Contact } from "../models/Contact";
 
 interface contactsState {
-    contacts: Contact[];
-    getAllContactsState: API_STATE.IDLE | API_STATE.LOADING | API_STATE.ERROR;
-    newContact: Contact
-    postNewContactState: API_STATE.IDLE | API_STATE.LOADING | API_STATE.ERROR | API_STATE.SUCCESS;
-    selectedContact: Contact | undefined;
+    contacts: any[];
+    getAllContactsState: API_STATE.IDLE | API_STATE.LOADING | API_STATE.ERROR
+    getContactByUUIDState : API_STATE.IDLE | API_STATE.LOADING | API_STATE.ERROR
+    selectedContact: any;
     deleteContactState: API_STATE.IDLE | API_STATE.LOADING | API_STATE.ERROR | API_STATE.SUCCESS;
 }
 
 const initialState: contactsState = {
     contacts: [],
     getAllContactsState: API_STATE.IDLE,
-    newContact: new Contact(),
-    postNewContactState: API_STATE.IDLE,
+    getContactByUUIDState : API_STATE.IDLE,
     selectedContact: undefined,
     deleteContactState:API_STATE.IDLE,
 }
@@ -29,13 +27,14 @@ export const fetchContacts = createAsyncThunk(
     },
   )
 
-export const createContact = createAsyncThunk(
-    'contacts/createContact',
-    async (contact : Contact, thunkAPI) => {
-      const response = await createContactAsync(contact)
+  export const getContactByUUID = createAsyncThunk(
+    'contacts/getContactByUUID',
+    async(uuid : string, thunkAPI) => {
+      const response = await getContactByUUIDAsync(uuid)
       return response
-    },
+    }
   )
+
 
   export const deleteSelectedContact = createAsyncThunk(
     'contacts/deleteContact',
@@ -49,11 +48,11 @@ export const contactsSlice = createSlice({
     name: 'contacts',
     initialState,
     reducers: {
-        setNewContact: (state, action) => {
-            state.newContact = action.payload
-        },
         setSelectedContact : (state, action) => {
-            state.selectedContact = state.contacts.find(contact => contact.uuid === action.payload)
+            return {
+              ...state, 
+              selectedContact : state.contacts.find(contact => contact.uuid === action.payload)
+            }
         }
     },
     extraReducers: (builder) => {
@@ -70,20 +69,14 @@ export const contactsSlice = createSlice({
         )
 
         builder.addCase(
-          createContact.fulfilled, (state, action) => {
-              state.postNewContactState = API_STATE.SUCCESS
-            }
-        )
+          getContactByUUID.fulfilled, (state, action) => {
+              state.getAllContactsState = API_STATE.IDLE
+              state.selectedContact = action.payload
+        })
 
         builder.addCase(
-          createContact.rejected, (state, action) => {
-            state.postNewContactState = API_STATE.ERROR
-          }
-        )
-
-        builder.addCase(
-          createContact.pending, (state) => {
-            state.postNewContactState = API_STATE.LOADING
+          getContactByUUID.pending, (state) => {
+            state.getAllContactsState = API_STATE.LOADING
           }
         )
 
@@ -108,6 +101,6 @@ export const contactsSlice = createSlice({
 });
 
 export const contactsSelector = (state : RootState ) => state.contacts
-export const { setNewContact, setSelectedContact } = contactsSlice.actions
+export const { setSelectedContact } = contactsSlice.actions
 
 export default contactsSlice.reducer

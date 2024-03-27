@@ -8,6 +8,7 @@ import { Box, Grid, Typography } from '@mui/material';
 import getCountryPhoneAreaCode from '../../utils/countryPhoneAreaCode';
 import { ViewType, showView } from '../../store/viewSlice';
 import { companiesSelector, fetchCompanies, setSelectedCompany } from '../../store/companiesSlice';
+import { useNavigate } from 'react-router-dom';
 
 interface Column {
     id: 'name' | 'email' | 'phone' | 'location' | 'type' | 'contact_method' | 'last_contacted';
@@ -77,7 +78,7 @@ const columns: GridColDef[] = [
 
 const CompanyTableComponent: React.FC = ({}) => {
 
-    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const appDispatch = useDispatch<AppDispatch>()
     const selector = useSelector(companiesSelector)
 
@@ -90,8 +91,7 @@ const CompanyTableComponent: React.FC = ({}) => {
         event : MuiEvent<React.MouseEvent<HTMLElement>>,
         details : GridCallbackDetails
         ) => {
-            dispatch(setSelectedCompany(params.row.uuid));
-            dispatch(showView(ViewType.Companies))
+            navigate(`/companies/${params.row.uuid}`)
     }
 
     

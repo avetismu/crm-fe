@@ -1,13 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { RootState } from "./store";
-import { API_STATE, createCompanyAsync, deleteSelectCompanyAsync, fetchCompaniesAsync, getCompaniesByNameAsync } from "./api";
+import { API_STATE, createCompanyAsync, deleteSelectCompanyAsync, fetchCompaniesAsync, getCompaniesByNameAsync, getCompanyByUUIDAsync } from "./api";
 import { Company } from "../models/Company";
 
 interface companiesState {
-    companies: Company[];
+    companies: any[];
     getAllCompaniesState: API_STATE.IDLE | API_STATE.LOADING | API_STATE.ERROR;
-    newCompany: Company;
-    postNewCompanyState: API_STATE.IDLE | API_STATE.LOADING | API_STATE.ERROR | API_STATE.SUCCESS;
+    getCompanyByUUIDState: API_STATE.IDLE | API_STATE.LOADING | API_STATE.ERROR;
     selectedCompany: Company | undefined;
     deleteCompanyState: API_STATE.IDLE | API_STATE.LOADING | API_STATE.ERROR | API_STATE.SUCCESS;
     companiesByName: Company[];
@@ -17,8 +16,7 @@ interface companiesState {
 const initialState: companiesState = {
     companies: [],
     getAllCompaniesState: API_STATE.IDLE,
-    newCompany: new Company(),
-    postNewCompanyState: API_STATE.IDLE,
+    getCompanyByUUIDState : API_STATE.IDLE,
     selectedCompany: undefined,
     deleteCompanyState:API_STATE.IDLE,
     companiesByName: [],
@@ -33,21 +31,25 @@ export const fetchCompanies = createAsyncThunk(
     },
   )
 
+  export const getCompanyByUUID = createAsyncThunk(
+    'companies/findCompanyByUUID',
+    async(uuid : string, thunkAPI) => {
+      const response = await getCompanyByUUIDAsync(uuid)
+      return response;
+    }
+  )
+
   export const getCompaniesByName = createAsyncThunk(
     'companies/getCompaniesByName',
-    async (companyName : string, thunkAPI) => {
-      const response = await getCompaniesByNameAsync(companyName)
-      return response
+    async (payload : any, thunkAPI) => {
+      const response = await getCompaniesByNameAsync(payload.query)
+      return {
+        response: response,
+        property: payload.property
+      }
     },
   )
 
-export const createCompany = createAsyncThunk(
-    'companies/createCompany',
-    async (company : Company, thunkAPI) => {
-      const response = await createCompanyAsync(company)
-      return response
-    },
-  )
 
   export const deleteSelectedCompany = createAsyncThunk(
     'companies/deleteCompany',
@@ -57,13 +59,15 @@ export const createCompany = createAsyncThunk(
     },
   )
 
+  export enum CompanyByNameProperty{
+    Companies,
+    CompaniesByName
+  }
+
 export const companiesSlice = createSlice({
     name: 'companies',
     initialState,
     reducers: {
-        setNewCompany: (state, action) => {
-            state.newCompany = action.payload
-        },
         setSelectedCompany : (state, action) => {
             state.selectedCompany = state.companies.find(company => company.uuid === action.payload)
         }
@@ -82,20 +86,14 @@ export const companiesSlice = createSlice({
         )
 
         builder.addCase(
-          createCompany.fulfilled, (state, action) => {
-              state.postNewCompanyState = API_STATE.SUCCESS
-            }
-        )
+          getCompanyByUUID.fulfilled, (state, action) => {
+              state.getCompanyByUUIDState = API_STATE.IDLE
+              state.selectedCompany = action.payload
+        })
 
         builder.addCase(
-          createCompany.rejected, (state, action) => {
-            state.postNewCompanyState = API_STATE.ERROR
-          }
-        )
-
-        builder.addCase(
-          createCompany.pending, (state) => {
-            state.postNewCompanyState = API_STATE.LOADING
+          getCompanyByUUID.pending, (state) => {
+            state.getCompanyByUUIDState = API_STATE.LOADING
           }
         )
 
@@ -120,7 +118,10 @@ export const companiesSlice = createSlice({
         builder.addCase(
           getCompaniesByName.fulfilled, (state, action) => {
               state.getCompaniesByNameState = API_STATE.IDLE
-              state.companiesByName = action.payload
+              if(action.payload.property === CompanyByNameProperty.Companies)
+                state.companies = action.payload.response
+              else
+                state.companiesByName = action.payload.response
         })
 
         builder.addCase(
@@ -132,6 +133,6 @@ export const companiesSlice = createSlice({
 });
 
 export const companiesSelector = (state : RootState ) => state.companies
-export const { setNewCompany, setSelectedCompany } = companiesSlice.actions
+export const { setSelectedCompany } = companiesSlice.actions
 
 export default companiesSlice.reducer

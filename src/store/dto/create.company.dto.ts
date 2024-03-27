@@ -21,6 +21,7 @@ export class CreateCompanyDto {
     contact_type: ContactType | null | undefined;
     last_contact: Date | null | undefined;
     contact_method: ContactMethod | null | undefined;
+    parent_entity: UUID | null | undefined;
 
     static fromCompany(company: Company) {
         let createCompanyDto = new CreateCompanyDto();
@@ -39,6 +40,7 @@ export class CreateCompanyDto {
         createCompanyDto.contact_type = company.contactType;
         createCompanyDto.last_contact = company.lastContact;
         createCompanyDto.contact_method = company.contactMethod;
+        createCompanyDto.parent_entity = company.parentEntity?.uuid;
 
         
         return createCompanyDto;

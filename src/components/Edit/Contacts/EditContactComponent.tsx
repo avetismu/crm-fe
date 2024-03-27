@@ -1,22 +1,27 @@
 import { Alert, Autocomplete, AutocompleteChangeReason, Box, Divider, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import { countries } from '../../../utils/CountryAutocompleteOptions';
+import React, {  useEffect, useMemo, useState } from 'react';
+import { Contact } from '../../../models/Contact';
+import { countries, getCountryByCode } from '../../../utils/CountryAutocompleteOptions';
+import { ContactType } from '../../../models/ContactType.enum';
 import { DatePicker } from '@mui/x-date-pickers';
 import { useDispatch, useSelector } from 'react-redux';
+import { CountryCode } from '../../../models/CountryCode.enum';
 import { API_STATE } from '../../../store/api';
 import { CompanyByNameProperty, companiesSelector, getCompaniesByName } from '../../../store/companiesSlice';
 import { Company } from '../../../models/Company';
 import { AppDispatch } from '../../../store/store';
-import { formCompanySelector, setFormCompany } from '../../../store/companyFormSlice';
+import { Form, useFetcher } from 'react-router-dom';
 import { isEmail, isPhoneNumber, isWeChatID } from '../../../utils/validation.util';
+import { formContactSelector, postNewContactStateSelector, setFormContact } from '../../../store/contactFormSlice';
 import dayjs from 'dayjs';
 
-const AddNewCompanyComponent: React.FC = () => {
+const EditContactComponent: React.FC = () => {
 
     const dispatch = useDispatch();
     const appDispatch = useDispatch<AppDispatch>();
-    const FormCompanySelector = useSelector(formCompanySelector);
+    const FormContactSelector = useSelector(formContactSelector);
     const CompaniesSelector = useSelector(companiesSelector);
+    
 
     let options : any[] = CompaniesSelector.companiesByName.map((result: Company) => {
     
@@ -28,60 +33,80 @@ const AddNewCompanyComponent: React.FC = () => {
       })
 
     const handleOnChange = (event: any, value: any, reason: AutocompleteChangeReason) => {
-    if (reason === 'selectOption') {
-        dispatch(setFormCompany({parentEntity : CompaniesSelector.companiesByName.find((result: any) => result.uuid === value.id)}))
-    }
+        
+        if (reason === 'selectOption') {
+            dispatch(setFormContact({
+                company : CompaniesSelector.companiesByName.find((result: any) => result.uuid === value.id)
+            }));
+        }
+        else if (reason === 'clear') {
+            dispatch(setFormContact({
+                company : undefined
+            }));
+        }
     }
 
+    useEffect(()=>{ console.log('FormContactSelect', FormContactSelector)}, [FormContactSelector])
 
     return (
         <Grid>
             <Grid container className="form-row">
-            {FormCompanySelector.postNewCompanyState === API_STATE.SUCCESS &&
+            {FormContactSelector.editContactState === API_STATE.SUCCESS &&
                 <Alert className="modal-alert" severity="success">Form Submitted!</Alert>}
-            {FormCompanySelector.postNewCompanyState === API_STATE.ERROR &&
+            {FormContactSelector.editContactState === API_STATE.ERROR &&
                 <Alert className="modal-alert" severity="error">Submission Error</Alert>}
             </Grid>
             <Grid container className="form-row">
                 <Grid md={3}>
                     <TextField
-                        label="Company Name"
+                        label="First Name"
                         onChange={(value) => {
-                            dispatch(setFormCompany({companyName : value.target.value}));
+                            dispatch(setFormContact({firstName : value.target.value}))
                         }}
-                        placeholder='ASMC Inc.'
-                        value={FormCompanySelector.formCompany.companyName}
+                        placeholder='John'
+                        value={FormContactSelector.formContact.firstName}
+                    />
+                </Grid>
+                <Grid md={3}>
+                    <TextField
+                    label="Last Name"
+                    onChange={(value)=>{
+                        dispatch(setFormContact({lastName : value.target.value}))
+                    }}
+                    placeholder='Smith'
+                    value={FormContactSelector.formContact.lastName}
                     />
                 </Grid>
                 <Grid md={3}>
                     <TextField
                     label="Email"
                     onChange={(value)=>{
-                        dispatch(setFormCompany({email : {
-                            value : value.target.value,
-                            error : !isEmail(value.target.value)
-                        }}));
+                        dispatch(setFormContact({
+                            email : {
+                                value: value.target.value,
+                                error: !isEmail(value.target.value)
+                            }
+                        }))  
                     }}
                     placeholder='john@smith.com'
-                    error={FormCompanySelector.formCompany.email.error}
-                    value={FormCompanySelector.formCompany.email.value}
+                    value={FormContactSelector.formContact.email.value}
+                    error={FormContactSelector.formContact.email.error}
                     />
                 </Grid>
                 <Grid md={3} container>
                     <TextField
                         label="WeChat ID"
                         onChange={(value)=>{
-                            dispatch(setFormCompany({
+                            dispatch(setFormContact({
                                 wechatId : {
-                                    value : value.target.value,
-                                    error : !isWeChatID(value.target.value)
+                                    value: value.target.value,
+                                    error: !isWeChatID(value.target.value)
                                 }
-                            }));
+                            }))
                         }}
                         placeholder='WeChat ID'
-                        error={FormCompanySelector.formCompany.wechatId.error}
-                        value={FormCompanySelector.formCompany.wechatId.value}
-
+                        error={FormContactSelector.formContact.wechatId.error}
+                        value={FormContactSelector.formContact.wechatId.value}
                     />
                 </Grid>
             </Grid>
@@ -91,10 +116,11 @@ const AddNewCompanyComponent: React.FC = () => {
                     label="Description"
                     sx={{width: '90%'}}
                     onChange={(value)=>{
-                        dispatch(setFormCompany({description : value.target.value}));
+                        dispatch(setFormContact({description : value.target.value}))
                     }}
                     placeholder='Description of contact.'
                     multiline
+                    value={FormContactSelector.formContact.description}
                     />
                 </Grid>
                 <Grid md={6}>
@@ -105,15 +131,16 @@ const AddNewCompanyComponent: React.FC = () => {
                         loading={CompaniesSelector.getCompaniesByNameState === API_STATE.LOADING}
                         noOptionsText='No Companies'
                         sx={{ width: 300 }}
-                        renderInput={(params) => <TextField {...params} label="Search Parent Company by Name" />}
+                        renderInput={(params) => <TextField {...params} label="Search Company by Name" />}
                         onInputChange={(event, newValue) => appDispatch(getCompaniesByName({query : newValue, property : CompanyByNameProperty.CompaniesByName}))}
                         isOptionEqualToValue={(option, value) => option.value === value.value}
                         onChange={handleOnChange}
+                        defaultValue={{id: '', label : FormContactSelector.formContact.company?.companyName || ''}}
                         />
                 </Grid>
             </Grid>
             <Grid container className="form-row">
-                <Grid md={3}>
+            <Grid md={3}>
                     <FormControl fullWidth sx={{maxWidth:'85%'}}>
                         <InputLabel id="contact-type-label">Contact Type</InputLabel>
                         <Select
@@ -121,9 +148,9 @@ const AddNewCompanyComponent: React.FC = () => {
                             id="contact-type-select"
                             label="Contact Type"
                             onChange={(value)=>{
-                                dispatch(setFormCompany({contactType : value.target.value}));
+                                dispatch(setFormContact({contactType : value.target.value}))
                             }}
-                            value={FormCompanySelector.formCompany.contactType}
+                            value={FormContactSelector.formContact.contactType}
                         >
                             <MenuItem value='DISTRIBUTOR'>Distributor</MenuItem>
                             <MenuItem value='CUSTOMER'>Customer</MenuItem>
@@ -141,10 +168,11 @@ const AddNewCompanyComponent: React.FC = () => {
                             id="contact-method-select"
                             label="Preferred Contact Method"
                             onChange={(value)=>{
-                                dispatch(setFormCompany({contactMethod : value.target.value}));
+                                dispatch(setFormContact({ contactMethod : value.target.value}))
                             }}
-                            value={FormCompanySelector.formCompany.contactMethod}
+                            value={FormContactSelector.formContact.contactMethod}
                         >
+                            
                             <MenuItem value='EMAIL'>Email</MenuItem>
                             <MenuItem value='PHONE'>Phone</MenuItem>
                             <MenuItem value='WHATSAPP'>WhatsApp</MenuItem>
@@ -163,9 +191,9 @@ const AddNewCompanyComponent: React.FC = () => {
                     <DatePicker
                     label="Last Contacted" 
                     sx={{maxWidth:'85%'}}
-                    value={dayjs(FormCompanySelector.formCompany.lastContact)} 
+                    value={dayjs(FormContactSelector.formContact.lastContact)} 
                     onChange={(value) => {
-                        dispatch(setFormCompany({lastContact : value}));
+                        dispatch(setFormContact({lastContact : value?.toString()}));
                     }} 
                     />
                 </Grid>
@@ -179,10 +207,11 @@ const AddNewCompanyComponent: React.FC = () => {
                         getOptionLabel={(option) => option.phone}
                         onInputChange={(event, value) => {
                             let newCountryPhoneAreaCode = countries.find((country) => country.phone === value)?.code
-                            if (newCountryPhoneAreaCode != FormCompanySelector.formCompany.countryPhoneAreaCode)
-                                dispatch(setFormCompany({countryPhoneAreaCode : newCountryPhoneAreaCode}));
+                            if (newCountryPhoneAreaCode != FormContactSelector.formContact.countryPhoneAreaCode)
+                                dispatch(setFormContact({countryPhoneAreaCode : newCountryPhoneAreaCode}))
                         }}
-                        value={countries.find((country) => country.code === FormCompanySelector.formCompany.countryPhoneAreaCode)}
+                        isOptionEqualToValue={(option, value) => option.phone === value.phone}
+                        value={getCountryByCode(FormContactSelector.formContact.countryPhoneAreaCode)}
                         renderOption={(props, option) => (
                             <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
                             <img
@@ -210,16 +239,14 @@ const AddNewCompanyComponent: React.FC = () => {
                             sx={{marginLeft:"10px"}}
                             label="Phone Number"
                             onChange={(value)=>{
-                                dispatch(setFormCompany({
-                                    phoneNumber : {
-                                        value : value.target.value,
-                                        error : !isPhoneNumber(value.target.value)
-                                    }
-                                }));
+                                dispatch(setFormContact({phoneNumber : {
+                                    value: value.target.value,
+                                    error: !isPhoneNumber(value.target.value)
+                                }}))
                             }}
                             placeholder='600-123-4567'
-                            error={FormCompanySelector.formCompany.phoneNumber.error}
-                            value={FormCompanySelector.formCompany.phoneNumber.value}
+                            error={FormContactSelector.formContact.phoneNumber.error}
+                            value={FormContactSelector.formContact.phoneNumber.value}
                         />
                 </Grid>
                 <Grid md={5} container>
@@ -230,10 +257,11 @@ const AddNewCompanyComponent: React.FC = () => {
                         getOptionLabel={(option) => option.phone}
                         onInputChange={(event, value) => {
                             let newWhatsappCountryPhoneAreaCode = countries.find((country) => country.phone === value)?.code
-                            if (newWhatsappCountryPhoneAreaCode != FormCompanySelector.formCompany.whatsappCountryPhoneAreaCode)
-                            dispatch(setFormCompany({whatsappCountryPhoneAreaCode : newWhatsappCountryPhoneAreaCode}));
+                            if (newWhatsappCountryPhoneAreaCode != FormContactSelector.formContact.whatsappCountryPhoneAreaCode)
+                                dispatch(setFormContact({whatsappCountryPhoneAreaCode : newWhatsappCountryPhoneAreaCode}))
                         }}
-                        value={countries.find((country) => country.code === FormCompanySelector.formCompany.whatsappCountryPhoneAreaCode)}
+                    
+                        value={countries.find((country) => country.code === FormContactSelector.formContact.whatsappCountryPhoneAreaCode)}
                         renderOption={(props, option) => (
                             <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
                             <img
@@ -261,16 +289,14 @@ const AddNewCompanyComponent: React.FC = () => {
                             sx={{marginLeft:"10px"}}
                             label="WhatsApp Phone Number"
                             onChange={(value)=>{
-                                dispatch(setFormCompany({
-                                    whatsappNumber : {
-                                        value : value.target.value,
-                                        error : !isPhoneNumber(value.target.value)
-                                    }
-                                }));
+                                dispatch(setFormContact({whatsappNumber : {
+                                    value: value.target.value,
+                                    error: !isPhoneNumber(value.target.value)
+                                }}))
                             }}
                             placeholder='600-123-4567'
-                            error={FormCompanySelector.formCompany.whatsappNumber.error}
-                            value={FormCompanySelector.formCompany.whatsappNumber.value}
+                            error={FormContactSelector.formContact.whatsappNumber.error}
+                            value={FormContactSelector.formContact.whatsappNumber.value}
                         />
                 </Grid>
             </Grid>
@@ -279,30 +305,30 @@ const AddNewCompanyComponent: React.FC = () => {
                     <TextField
                         label="Street Address"
                         onChange={(value)=>{
-                            dispatch(setFormCompany({streetAddress : value.target.value}));
+                            dispatch(setFormContact({streetAddress : value.target.value}))
                         }}
                         placeholder='123 Main St.'
-                        value={FormCompanySelector.formCompany.streetAddress}
+                        value={FormContactSelector.formContact.streetAddress}
                     />
                 </Grid>
                 <Grid md={3}>
                     <TextField
                         label="City"
                         onChange={(value)=>{
-                            dispatch(setFormCompany({city : value.target.value}));
+                            dispatch(setFormContact({city : value.target.value}))
                         }}
                         placeholder='New York'
-                        value={FormCompanySelector.formCompany.city}
+                        value={FormContactSelector.formContact.city}
                     />
                 </Grid>
                 <Grid md={3}>
                     <TextField
-                        label="Province"
+                        label="Province/State"
                         onChange={(value)=>{
-                            dispatch(setFormCompany({province : value.target.value}));
+                            dispatch(setFormContact({province : value.target.value}))
                         }}
                         placeholder='NY'
-                        value={FormCompanySelector.formCompany.province}
+                        value={FormContactSelector.formContact.province}
                     />
                 </Grid>
                 <Grid md={3}>
@@ -323,10 +349,10 @@ const AddNewCompanyComponent: React.FC = () => {
                     )}
                     onInputChange={(event, value) => {
                         let countryElement = countries.find((country) => country.label === value)
-                        if (countryElement?.code != FormCompanySelector.formCompany.country)
-                            dispatch(setFormCompany({country : countryElement?.code}))
+                        if (countryElement?.code != FormContactSelector.formContact.country)
+                            dispatch(setFormContact({country : countryElement?.code}))
                     }}
-                    value={countries.find((country) => country.code === FormCompanySelector.formCompany.country)}
+                    value={countries.find((country) => country.code === FormContactSelector.formContact.country)}
                     renderInput={(params) => (
                         <TextField
                           {...params}
@@ -344,4 +370,4 @@ const AddNewCompanyComponent: React.FC = () => {
     );
 };
 
-export default AddNewCompanyComponent;
+export default EditContactComponent;

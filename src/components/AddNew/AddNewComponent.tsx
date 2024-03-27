@@ -3,12 +3,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import {AddNewType, addNewSelector, hideAddNew} from '../../store/addNewSlice';
 import { Button, Divider, Fade, Grid, Modal, Typography } from '@mui/material';
 import AddNewContactComponent from './Contacts/AddNewContactComponent';
-import { createContact, contactsSelector } from '../../store/contactsSlice';
+
 import { AppDispatch, RootState } from '../../store/store';
-import { Contact } from '../../models/Contact';
 import AddNewCompanyComponent from './Companies/AddNewCompanyComponent';
-import { companiesSelector, createCompany } from '../../store/companiesSlice';
-import { Company } from '../../models/Company';
+import { createContact, formContactSelector } from '../../store/contactFormSlice';
+import { createCompany, formCompanySelector } from '../../store/companyFormSlice';
+import { contactsSelector } from '../../store/contactsSlice';
 
 interface AddNewComponentProps {
     // Define your props here
@@ -20,14 +20,14 @@ const AddNewComponent: React.FC<AddNewComponentProps> = (props) => {
     const appDispatch = useDispatch<AppDispatch>();
     const AddNewSelector = useSelector(addNewSelector)
 
-    const ContactsSelector = useSelector(contactsSelector)
-    const CompaniesSelector = useSelector(companiesSelector)
+    const FormContactSelector = useSelector(formContactSelector)
+    const FormCompanySelector = useSelector(formCompanySelector)
 
     const getNewForm = (addNewType: AddNewType | undefined): ReactNode => {
         switch(addNewType){
             case AddNewType.Contacts:
-                return <AddNewContactComponent/>
 
+                return <AddNewContactComponent/>
             case AddNewType.Companies:
                 return <AddNewCompanyComponent/>
         }
@@ -36,13 +36,31 @@ const AddNewComponent: React.FC<AddNewComponentProps> = (props) => {
     const submit = (addNewType: AddNewType | undefined) => {
         switch(addNewType){
             case AddNewType.Contacts:
-                appDispatch(createContact(ContactsSelector.newContact))
+                appDispatch(createContact(FormContactSelector.formContact))
                 break;
             case AddNewType.Companies:
-                appDispatch(createCompany(CompaniesSelector.newCompany))
+                appDispatch(createCompany(FormCompanySelector.formCompany))
         
         }
 
+    }
+
+    const isFormValid = (addNewType: AddNewType | undefined): boolean => {
+
+        switch(addNewType){
+            case AddNewType.Contacts:
+                if(FormContactSelector.formContact.firstName === "" || FormContactSelector.formContact.lastName === ""){
+                    return false
+                }
+                return true
+            case AddNewType.Companies:
+                if(FormCompanySelector.formCompany.companyName === ""){
+                    return false
+                }
+                return true
+        }
+
+        return false
     }
 
     return (
@@ -59,7 +77,7 @@ const AddNewComponent: React.FC<AddNewComponentProps> = (props) => {
                             {getNewForm(AddNewSelector.type)}
                         </Grid>
                         <Grid container justifyContent="center">
-                            <Button variant="contained" sx={{marginRight:"1em"}} onClick={() => submit(AddNewSelector.type)}>Submit</Button>
+                            <Button variant="contained" sx={{marginRight:"1em"}} onClick={() => submit(AddNewSelector.type)} disabled={!isFormValid(AddNewSelector.type)}>Submit</Button>
                             <Button variant="outlined" onClick={()=>{dispatch(hideAddNew())}}>Close</Button>
                         </Grid>
                     </Grid>

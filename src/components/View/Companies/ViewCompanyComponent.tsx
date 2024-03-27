@@ -6,7 +6,8 @@ import getCountryPhoneAreaCode from '../../../utils/countryPhoneAreaCode';
 import { countries } from '../../../utils/CountryAutocompleteOptions';
 import Flag from '../../../utils/flags.util';
 import { API_STATE } from '../../../store/api';
-
+import { companiesSelector } from '../../../store/companiesSlice';
+import PersonIcon from '@mui/icons-material/Person';
 import BusinessIcon from '@mui/icons-material/Business';
 import HomeIcon from '@mui/icons-material/Home';
 import PhoneIcon from '@mui/icons-material/Phone';
@@ -16,56 +17,103 @@ import ConnectWithoutContactIcon from '@mui/icons-material/ConnectWithoutContact
 import AppSettingsAltIcon from '@mui/icons-material/AppSettingsAlt';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 
-interface ViewContactComponentProps {
+interface ViewCompanyComponentProps {
 }
 
-const ViewContactComponent: React.FC<ViewContactComponentProps> = () => {
-    const selector = useSelector(contactsSelector)
+const ViewCompanyComponent: React.FC<ViewCompanyComponentProps> = () => {
+    const selector = useSelector(companiesSelector)
 
     return (
         <Grid>
             <Grid container className="form-row">
-                {selector.deleteContactState === API_STATE.SUCCESS &&
+                {selector.deleteCompanyState === API_STATE.SUCCESS &&
                     <Alert className="modal-alert" severity="success">Record Deleted!</Alert>}
-                {selector.deleteContactState === API_STATE.ERROR &&
+                {selector.deleteCompanyState === API_STATE.ERROR &&
                     <Alert className="modal-alert" severity="error">Deletion Error!</Alert>}
             </Grid>
             <Grid container sx={{padding:1}}>
                 <Grid md={6}>
                     <Grid md={12} container justifyContent='center' sx={{marginBottom:'10px'}}>
                         <Typography variant='h5'>
-                            {selector.selectedContact?.firstName} {selector.selectedContact?.lastName}
+                            {selector.selectedCompany?.companyName}
                         </Typography>
                     </Grid>
                     <Grid md={12} container justifyContent='center'>
                         <Typography variant='body1'>
-                            {selector.selectedContact?.description}
+                            {selector.selectedCompany?.description}
                         </Typography>
                     </Grid>
                     <Grid md={12} container justifyContent='center'>
                         <Typography variant='body2'>
-                            {selector.selectedContact?.email}
+                            {selector.selectedCompany?.email}
                         </Typography>
                     </Grid>
+                    <Grid md={12} container justifyContent='left' sx={{marginTop:2}}>
+                        <Typography variant='h6'>
+                            People
+                        </Typography>
+                    </Grid>
+                    <Grid md={12} container justifyContent='left'>
+                        {selector.selectedCompany?.contacts?.map((contact) => 
+                            <Grid md={12} container justifyContent='left' className='contact-row'>
+                                <Grid md={2}>
+                                    <PersonIcon/>
+                                </Grid>
+                                <Grid md={6}>
+                                    <Typography variant='body1'>
+                                        {contact.firstName} {contact.lastName}
+                                    </Typography>
+                                </Grid>
+                                <Grid md={4}>
+                                    <Typography variant='body2'>
+                                        {contact.description}
+                                    </Typography>
+                                </Grid>
+                            </Grid>
+                        )}
+                    </Grid>
+                    {selector.selectedCompany?.subEntities && selector.selectedCompany?.subEntities?.length > 0 &&
+                    <Grid md={12} container justifyContent='left' sx={{marginTop:2}}>
+                        <Typography variant='h6'>
+                            Sub-Entities
+                        </Typography>
+                    </Grid>
+                    }
+                    {selector.selectedCompany?.subEntities && selector.selectedCompany?.subEntities?.length > 0 &&
+                    <Grid md={12} container justifyContent='left'>
+                        {selector.selectedCompany?.subEntities?.map((entity) => 
+                            <Grid md={12} container justifyContent='left' className='contact-row'>
+                                <Grid md={2}>
+                                    <BusinessIcon/>
+                                </Grid>
+                                <Grid md={10}>
+                                    <Typography variant='body1'>
+                                        {entity.companyName}
+                                    </Typography>
+                                </Grid>
+                            </Grid>
+                        )}
+                    </Grid> }
                 </Grid>
                 <Grid md={6}>
+                    {selector.selectedCompany?.parentEntity && 
                     <Grid md={12} container className='information-row'>
                         <Grid md={6} container justifyContent='left'>
                             <BusinessIcon sx={{width : '15px'}}/>
                             <Typography variant='body2' sx={{marginLeft:1, marginTop:0.3}}>
-                                Company
+                                Parent Entity
                             </Typography>
                         </Grid>
                         <Grid md={6} >
                             <Typography variant='body1'>
-                                {selector.selectedContact?.company?.companyName}
+                                {selector.selectedCompany?.parentEntity?.companyName}
                             </Typography>
                             <Typography variant='body2'>
-                                {selector.selectedContact?.company?.streetAddress}, {selector.selectedContact?.company?.city}, {selector.selectedContact?.company?.province}, {countries.find((country) => country.code === selector.selectedContact?.company?.country)?.label}
+                                {selector.selectedCompany?.parentEntity?.streetAddress}, {selector.selectedCompany?.parentEntity?.city}, {selector.selectedCompany?.parentEntity?.province}, {countries.find((country) => country.code === selector.selectedCompany?.parentEntity?.country)?.label}
                             </Typography>
-                            <Flag countryCode={selector.selectedContact?.company?.country}/>
+                            <Flag countryCode={selector.selectedCompany?.parentEntity?.country}/>
                         </Grid>
-                    </Grid>
+                    </Grid>}
                     <Grid md={12} container className='information-row'>
                         <Grid md={6} container justifyContent='left'>
                             <HomeIcon sx={{width : '15px'}}/>
@@ -73,11 +121,11 @@ const ViewContactComponent: React.FC<ViewContactComponentProps> = () => {
                                 Address
                             </Typography>
                         </Grid>
-                        <Grid md={6}>
+                        <Grid md={6} >
                             <Typography variant='body1'>
-                                {selector.selectedContact?.streetAddress}, {selector.selectedContact?.city}, {selector.selectedContact?.province}, {countries.find((country) => country.code === selector.selectedContact?.country)?.label}
+                                {selector.selectedCompany?.streetAddress}, {selector.selectedCompany?.city}, {selector.selectedCompany?.province}, {countries.find((country) => country.code === selector.selectedCompany?.country)?.label}
                             </Typography>
-                            <Flag countryCode={selector.selectedContact?.country}/>
+                            <Flag countryCode={selector.selectedCompany?.country}/>
                         </Grid>
                     </Grid>
                     <Grid md={12} container className='information-row'>
@@ -88,9 +136,9 @@ const ViewContactComponent: React.FC<ViewContactComponentProps> = () => {
                             </Typography>
                         </Grid>
                         <Grid md={6} container>
-                            <Flag countryCode={selector.selectedContact?.countryPhoneAreaCode}/>
+                            <Flag countryCode={selector.selectedCompany?.countryPhoneAreaCode}/>
                             <Typography variant='body2' sx={{marginLeft:'10px'}}>
-                                 {getCountryPhoneAreaCode(selector.selectedContact?.countryPhoneAreaCode)} {selector.selectedContact?.phoneNumber}
+                                 {getCountryPhoneAreaCode(selector.selectedCompany?.countryPhoneAreaCode)} {selector.selectedCompany?.phoneNumber}
                             </Typography>
                         </Grid>
                     </Grid>
@@ -103,7 +151,7 @@ const ViewContactComponent: React.FC<ViewContactComponentProps> = () => {
                         </Grid>
                         <Grid md={6}>
                             <Typography variant='body1'>
-                                {selector.selectedContact?.wechatId}
+                                {selector.selectedCompany?.wechatId}
                             </Typography>
                         </Grid>
                     </Grid>
@@ -115,9 +163,9 @@ const ViewContactComponent: React.FC<ViewContactComponentProps> = () => {
                             </Typography>
                         </Grid>
                         <Grid md={6} container>
-                            <Flag countryCode={selector.selectedContact?.whatsappCountryPhoneAreaCode}/>
+                            <Flag countryCode={selector.selectedCompany?.whatsappCountryPhoneAreaCode}/>
                             <Typography variant='body2' sx={{marginLeft:'10px'}}>
-                                 {getCountryPhoneAreaCode(selector.selectedContact?.whatsappCountryPhoneAreaCode)} {selector.selectedContact?.whatsappNumber}
+                                 {getCountryPhoneAreaCode(selector.selectedCompany?.whatsappCountryPhoneAreaCode)} {selector.selectedCompany?.whatsappNumber}
                             </Typography>
                         </Grid>
                     </Grid>
@@ -130,7 +178,7 @@ const ViewContactComponent: React.FC<ViewContactComponentProps> = () => {
                         </Grid>
                         <Grid md={6}>
                             <Typography variant='body1'>
-                                 {selector.selectedContact?.contactType}
+                                 {selector.selectedCompany?.contactType}
                             </Typography>
                         </Grid>
                     </Grid>
@@ -143,7 +191,7 @@ const ViewContactComponent: React.FC<ViewContactComponentProps> = () => {
                         </Grid>
                         <Grid md={6}>
                             <Typography variant='body1'>
-                                 {selector.selectedContact?.contactMethod}
+                                 {selector.selectedCompany?.contactMethod}
                             </Typography>
                         </Grid>
                     </Grid>
@@ -156,7 +204,7 @@ const ViewContactComponent: React.FC<ViewContactComponentProps> = () => {
                         </Grid>
                         <Grid md={6}>
                             <Typography variant='body1'>
-                                {selector.selectedContact?.lastContact && new Date(selector.selectedContact?.lastContact).toLocaleDateString('en-CA')}
+                                {selector.selectedCompany?.lastContact && new Date(selector.selectedCompany?.lastContact).toLocaleDateString('en-CA')}
                             </Typography>
                         </Grid>
                     </Grid>
@@ -166,4 +214,4 @@ const ViewContactComponent: React.FC<ViewContactComponentProps> = () => {
     );
 };
 
-export default ViewContactComponent;
+export default ViewCompanyComponent;

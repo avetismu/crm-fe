@@ -11,7 +11,7 @@ import { formCompanySelector, setFormCompany } from '../../../store/companyFormS
 import { isEmail, isPhoneNumber, isWeChatID } from '../../../utils/validation.util';
 import dayjs from 'dayjs';
 
-const AddNewCompanyComponent: React.FC = () => {
+const EditCompanyComponent: React.FC = () => {
 
     const dispatch = useDispatch();
     const appDispatch = useDispatch<AppDispatch>();
@@ -31,15 +31,20 @@ const AddNewCompanyComponent: React.FC = () => {
     if (reason === 'selectOption') {
         dispatch(setFormCompany({parentEntity : CompaniesSelector.companiesByName.find((result: any) => result.uuid === value.id)}))
     }
+    else if (reason === 'clear') {
+        dispatch(setFormCompany({
+            parentEntity : undefined
+        }));
+    }
     }
 
 
     return (
         <Grid>
             <Grid container className="form-row">
-            {FormCompanySelector.postNewCompanyState === API_STATE.SUCCESS &&
+            {FormCompanySelector.editCompanyState === API_STATE.SUCCESS &&
                 <Alert className="modal-alert" severity="success">Form Submitted!</Alert>}
-            {FormCompanySelector.postNewCompanyState === API_STATE.ERROR &&
+            {FormCompanySelector.editCompanyState === API_STATE.ERROR &&
                 <Alert className="modal-alert" severity="error">Submission Error</Alert>}
             </Grid>
             <Grid container className="form-row">
@@ -81,7 +86,6 @@ const AddNewCompanyComponent: React.FC = () => {
                         placeholder='WeChat ID'
                         error={FormCompanySelector.formCompany.wechatId.error}
                         value={FormCompanySelector.formCompany.wechatId.value}
-
                     />
                 </Grid>
             </Grid>
@@ -95,6 +99,7 @@ const AddNewCompanyComponent: React.FC = () => {
                     }}
                     placeholder='Description of contact.'
                     multiline
+                    value={FormCompanySelector.formCompany.description}
                     />
                 </Grid>
                 <Grid md={6}>
@@ -109,6 +114,7 @@ const AddNewCompanyComponent: React.FC = () => {
                         onInputChange={(event, newValue) => appDispatch(getCompaniesByName({query : newValue, property : CompanyByNameProperty.CompaniesByName}))}
                         isOptionEqualToValue={(option, value) => option.value === value.value}
                         onChange={handleOnChange}
+                        defaultValue={{id: '', label : FormCompanySelector.formCompany.parentEntity?.companyName || ''}}
                         />
                 </Grid>
             </Grid>
@@ -344,4 +350,4 @@ const AddNewCompanyComponent: React.FC = () => {
     );
 };
 
-export default AddNewCompanyComponent;
+export default EditCompanyComponent;

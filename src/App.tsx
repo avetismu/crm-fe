@@ -35,7 +35,7 @@ function App() {
           >
             <Toolbar />
             <List>
-              <ListItemButton>
+              <ListItemButton LinkComponent='a' href='/contacts'>
                 <ListItemIcon>
                   <ContactPageIcon/>
                 </ListItemIcon>
@@ -43,7 +43,7 @@ function App() {
                   Contacts
                 </ListItemText>
               </ListItemButton>
-              <ListItemButton>
+              <ListItemButton  LinkComponent='a' href='/companies'>
                 <ListItemIcon>
                   <BusinessIcon/>
                 </ListItemIcon>
