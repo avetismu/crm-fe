@@ -104,6 +104,7 @@ const contactFormSlice = createSlice({
     name: 'contactForm',
     initialState,
     reducers: {
+        resetFormContact : ()=> initialState,
         setFormContact: (state, action) => {
           console.log('action', action)
             return {
@@ -154,7 +155,7 @@ const contactFormSlice = createSlice({
     }
 });
 
-export const { setFormContact } = contactFormSlice.actions;
+export const { setFormContact, resetFormContact } = contactFormSlice.actions;
 export default contactFormSlice.reducer;
 
 export const formContactSelector = (state : RootState) => state.contactForm

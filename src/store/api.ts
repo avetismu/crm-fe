@@ -9,13 +9,14 @@ import { UpdateCompanyDto } from './dto/update.company.dto';
 const BASE_URL = process.env.REACT_APP_API;
 
 const GET_CONTACTS_ALL = '/contacts/all';
+const GET_CONTACTS_BY_NAME = '/contacts/by_name/';
 const GET_CONTACT_BY_UUID = '/contacts/';
 const CREATE_CONTACT = '/contacts/create';
 const UPDATE_CONTACT = '/contacts/';
 const DELETE_CONTACT = 'contacts/'
 
 const GET_COMPANIES_ALL = '/companies/all';
-const GET_COMPANIES_BY_NAME = '/companies/by_name';
+const GET_COMPANIES_BY_NAME = '/companies/by_name/';
 const GET_COMPANY_BY_UUID = '/companies/';
 const CREATE_COMPANY = '/companies/create';
 const UPDATE_COMPANY = '/companies/'
@@ -41,6 +42,15 @@ export const fetchContactsAsync = async (page : Number) => {
         throw new Error('Failed to fetch contacts.');
     }
 }
+
+export const getContactsByNameAsync = async (query : string) => {
+    try {
+        const response = await userAPI.get(GET_CONTACTS_BY_NAME + `${query}`);
+        return response.data;
+    } catch (error) {
+        throw new Error('Failed to find contacts by name.');
+    }
+};
 
 export const getContactByUUIDAsync = async (uuid : string) => {
     try {
@@ -93,7 +103,7 @@ export const fetchCompaniesAsync = async (page : Number) => {
 
 export const getCompaniesByNameAsync = async (companyName : string) => {
     try {
-        const response = await userAPI.get(GET_COMPANIES_BY_NAME + `/${companyName}`);
+        const response = await userAPI.get(GET_COMPANIES_BY_NAME + `${companyName}`);
         return response.data;
     } catch (error) {
         throw new Error('Failed to fetch contacts.');
