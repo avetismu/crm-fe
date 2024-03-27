@@ -41,9 +41,12 @@ export const fetchCompanies = createAsyncThunk(
 
   export const getCompaniesByName = createAsyncThunk(
     'companies/getCompaniesByName',
-    async (companyName : string, thunkAPI) => {
-      const response = await getCompaniesByNameAsync(companyName)
-      return response
+    async (payload : any, thunkAPI) => {
+      const response = await getCompaniesByNameAsync(payload.query)
+      return {
+        response: response,
+        property: payload.property
+      }
     },
   )
 
@@ -55,6 +58,11 @@ export const fetchCompanies = createAsyncThunk(
       return response
     },
   )
+
+  export enum CompanyByNameProperty{
+    Companies,
+    CompaniesByName
+  }
 
 export const companiesSlice = createSlice({
     name: 'companies',
@@ -110,7 +118,10 @@ export const companiesSlice = createSlice({
         builder.addCase(
           getCompaniesByName.fulfilled, (state, action) => {
               state.getCompaniesByNameState = API_STATE.IDLE
-              state.companiesByName = action.payload
+              if(action.payload.property === CompanyByNameProperty.Companies)
+                state.companies = action.payload.response
+              else
+                state.companiesByName = action.payload.response
         })
 
         builder.addCase(

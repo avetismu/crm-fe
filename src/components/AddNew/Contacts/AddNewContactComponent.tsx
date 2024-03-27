@@ -7,7 +7,7 @@ import { DatePicker } from '@mui/x-date-pickers';
 import { useDispatch, useSelector } from 'react-redux';
 import { CountryCode } from '../../../models/CountryCode.enum';
 import { API_STATE } from '../../../store/api';
-import { companiesSelector, getCompaniesByName } from '../../../store/companiesSlice';
+import { CompanyByNameProperty, companiesSelector, getCompaniesByName } from '../../../store/companiesSlice';
 import { Company } from '../../../models/Company';
 import { AppDispatch } from '../../../store/store';
 import { useFetcher } from 'react-router-dom';
@@ -123,7 +123,7 @@ const AddNewContactComponent: React.FC = () => {
                         noOptionsText='No Companies'
                         sx={{ width: 300 }}
                         renderInput={(params) => <TextField {...params} label="Search Company by Name" />}
-                        onInputChange={(event, newValue) => appDispatch(getCompaniesByName(newValue))}
+                        onInputChange={(event, newValue) => appDispatch(getCompaniesByName({query : newValue, property : CompanyByNameProperty.CompaniesByName}))}
                         isOptionEqualToValue={(option, value) => option.value === value.value}
                         onChange={handleOnChange}
                         />

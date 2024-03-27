@@ -45,6 +45,24 @@ const AddNewComponent: React.FC<AddNewComponentProps> = (props) => {
 
     }
 
+    const isFormValid = (addNewType: AddNewType | undefined): boolean => {
+
+        switch(addNewType){
+            case AddNewType.Contacts:
+                if(FormContactSelector.formContact.firstName === "" || FormContactSelector.formContact.lastName === ""){
+                    return false
+                }
+                return true
+            case AddNewType.Companies:
+                if(FormCompanySelector.formCompany.companyName === ""){
+                    return false
+                }
+                return true
+        }
+
+        return false
+    }
+
     return (
         <Modal open={AddNewSelector.isVisible}> 
             <Fade in={AddNewSelector.isVisible}>
@@ -59,7 +77,7 @@ const AddNewComponent: React.FC<AddNewComponentProps> = (props) => {
                             {getNewForm(AddNewSelector.type)}
                         </Grid>
                         <Grid container justifyContent="center">
-                            <Button variant="contained" sx={{marginRight:"1em"}} onClick={() => submit(AddNewSelector.type)}>Submit</Button>
+                            <Button variant="contained" sx={{marginRight:"1em"}} onClick={() => submit(AddNewSelector.type)} disabled={!isFormValid(AddNewSelector.type)}>Submit</Button>
                             <Button variant="outlined" onClick={()=>{dispatch(hideAddNew())}}>Close</Button>
                         </Grid>
                     </Grid>

@@ -49,6 +49,24 @@ const EditComponent: React.FC<EditComponentProps> = (props) => {
         }
     }
 
+    const isFormValid = (editType: EditType | undefined): boolean => {
+
+        switch(editType){
+            case EditType.Contacts:
+                if(FormContactSelector.formContact.firstName === "" || FormContactSelector.formContact.lastName === ""){
+                    return false
+                }
+                return true
+            case EditType.Companies:
+                if(FormCompanySelector.formCompany.companyName === ""){
+                    return false
+                }
+                return true
+        }
+
+        return false
+    }
+
     return (
         <Modal open={EditSelector.isVisible}> 
             <Fade in={EditSelector.isVisible}>
@@ -63,7 +81,7 @@ const EditComponent: React.FC<EditComponentProps> = (props) => {
                             {getEditForm(EditSelector.type)}
                         </Grid>
                         <Grid container justifyContent="center">
-                            <Button variant="contained" sx={{marginRight:"1em"}} onClick={() => submit(EditSelector.type)}>Submit</Button>
+                            <Button variant="contained" sx={{marginRight:"1em"}} onClick={() => submit(EditSelector.type)} disabled={!isFormValid(EditSelector.type)}>Submit</Button>
                             <Button variant="outlined" onClick={()=>{dispatch(hideEdit())}}>Close</Button>
                         </Grid>
                     </Grid>

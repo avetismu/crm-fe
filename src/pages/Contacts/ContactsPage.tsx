@@ -22,10 +22,6 @@ const ContactsPage: React.FC = () => {
                 appDispatch(getContactByUUID(params.uuid))
         }
 
-        const showEditForm = () => {
-                dispatch(showEdit(EditType.Contacts))
-        }
-
         const showAddNewForm = () =>{
                 dispatch(showAddNew(AddNewType.Contacts))
         }

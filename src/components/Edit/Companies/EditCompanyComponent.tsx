@@ -4,7 +4,7 @@ import { countries } from '../../../utils/CountryAutocompleteOptions';
 import { DatePicker } from '@mui/x-date-pickers';
 import { useDispatch, useSelector } from 'react-redux';
 import { API_STATE } from '../../../store/api';
-import { companiesSelector, getCompaniesByName } from '../../../store/companiesSlice';
+import { CompanyByNameProperty, companiesSelector, getCompaniesByName } from '../../../store/companiesSlice';
 import { Company } from '../../../models/Company';
 import { AppDispatch } from '../../../store/store';
 import { formCompanySelector, setFormCompany } from '../../../store/companyFormSlice';
@@ -111,7 +111,7 @@ const EditCompanyComponent: React.FC = () => {
                         noOptionsText='No Companies'
                         sx={{ width: 300 }}
                         renderInput={(params) => <TextField {...params} label="Search Parent Company by Name" />}
-                        onInputChange={(event, newValue) => appDispatch(getCompaniesByName(newValue))}
+                        onInputChange={(event, newValue) => appDispatch(getCompaniesByName({query : newValue, property : CompanyByNameProperty.CompaniesByName}))}
                         isOptionEqualToValue={(option, value) => option.value === value.value}
                         onChange={handleOnChange}
                         defaultValue={{id: '', label : FormCompanySelector.formCompany.parentEntity?.companyName || ''}}
