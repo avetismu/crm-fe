@@ -7,6 +7,7 @@ import Flag from '../../utils/flags.util'
 import { Box, Grid, Typography } from '@mui/material';
 import getCountryPhoneAreaCode from '../../utils/countryPhoneAreaCode';
 import { ViewType, showView } from '../../store/viewSlice';
+import { useNavigate } from 'react-router-dom';
 
 const columns: GridColDef[] = [
     {
@@ -79,7 +80,7 @@ const columns: GridColDef[] = [
 
 const ContactTableComponent: React.FC = ({}) => {
 
-    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const appDispatch = useDispatch<AppDispatch>()
     const selector = useSelector(contactsSelector)
 
@@ -92,8 +93,7 @@ const ContactTableComponent: React.FC = ({}) => {
         event : MuiEvent<React.MouseEvent<HTMLElement>>,
         details : GridCallbackDetails
         ) => {
-            dispatch(setSelectedContact(params.row.uuid));
-            dispatch(showView(ViewType.Contacts))
+            navigate(`/contacts/${params.row.uuid}`)
     }
 
     
