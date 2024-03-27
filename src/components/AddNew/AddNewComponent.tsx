@@ -6,7 +6,7 @@ import AddNewContactComponent from './Contacts/AddNewContactComponent';
 
 import { AppDispatch, RootState } from '../../store/store';
 import AddNewCompanyComponent from './Companies/AddNewCompanyComponent';
-import { createContact, formContactSelector } from '../../store/contactFormSlice';
+import { createContact, formContactSelector, resetFormContact } from '../../store/contactFormSlice';
 import { createCompany, formCompanySelector } from '../../store/companyFormSlice';
 import { contactsSelector } from '../../store/contactsSlice';
 
@@ -63,6 +63,16 @@ const AddNewComponent: React.FC<AddNewComponentProps> = (props) => {
         return false
     }
 
+    const resetAddNew = (addNewType: AddNewType | undefined) : void => {
+        switch(addNewType){
+            case AddNewType.Contacts:
+                dispatch(resetFormContact())
+                break;
+            case AddNewType.Companies:
+                break;
+        }
+    }
+
     return (
         <Modal open={AddNewSelector.isVisible}> 
             <Fade in={AddNewSelector.isVisible}>
@@ -78,7 +88,7 @@ const AddNewComponent: React.FC<AddNewComponentProps> = (props) => {
                         </Grid>
                         <Grid container justifyContent="center">
                             <Button variant="contained" sx={{marginRight:"1em"}} onClick={() => submit(AddNewSelector.type)} disabled={!isFormValid(AddNewSelector.type)}>Submit</Button>
-                            <Button variant="outlined" onClick={()=>{dispatch(hideAddNew())}}>Close</Button>
+                            <Button variant="outlined" onClick={()=>{dispatch(hideAddNew()); resetAddNew(AddNewSelector.type)}}>Close</Button>
                         </Grid>
                     </Grid>
                 </Grid>
@@ -88,4 +98,5 @@ const AddNewComponent: React.FC<AddNewComponentProps> = (props) => {
 };
 
 export default AddNewComponent;
+
 
