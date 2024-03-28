@@ -8,10 +8,10 @@ import { CompanyByNameProperty, companiesSelector, getCompaniesByName } from '..
 import { Company } from '../../../models/Company';
 import { AppDispatch } from '../../../store/store';
 import { formCompanySelector, setFormCompany } from '../../../store/companyFormSlice';
-import { isEmail, isPhoneNumber, isWeChatID } from '../../../utils/validation.util';
+import { isEmail, isPhoneNumber, isWeChatID, isWebsite } from '../../../utils/validation.util';
 import dayjs from 'dayjs';
 
-const AddNewCompanyComponent: React.FC = () => {
+const CompanyFormComponent: React.FC = () => {
 
     const dispatch = useDispatch();
     const appDispatch = useDispatch<AppDispatch>();
@@ -31,15 +31,20 @@ const AddNewCompanyComponent: React.FC = () => {
     if (reason === 'selectOption') {
         dispatch(setFormCompany({parentEntity : CompaniesSelector.companiesByName.find((result: any) => result.uuid === value.id)}))
     }
+    else if (reason === 'clear') {
+        dispatch(setFormCompany({
+            parentEntity : undefined
+        }));
+    }
     }
 
 
     return (
         <Grid>
             <Grid container className="form-row">
-            {FormCompanySelector.postNewCompanyState === API_STATE.SUCCESS &&
+            {FormCompanySelector.editCompanyState === API_STATE.SUCCESS &&
                 <Alert className="modal-alert" severity="success">Form Submitted!</Alert>}
-            {FormCompanySelector.postNewCompanyState === API_STATE.ERROR &&
+            {FormCompanySelector.editCompanyState === API_STATE.ERROR &&
                 <Alert className="modal-alert" severity="error">Submission Error</Alert>}
             </Grid>
             <Grid container className="form-row">
@@ -69,6 +74,23 @@ const AddNewCompanyComponent: React.FC = () => {
                 </Grid>
                 <Grid md={3} container>
                     <TextField
+                        label="Website"
+                        onChange={(value)=>{
+                            dispatch(setFormCompany({
+                                website : {
+                                    value : value.target.value,
+                                    error : !isWebsite(value.target.value)
+                                }
+                            }));
+                        }}
+                        placeholder='WeChat ID'
+                        error={FormCompanySelector.formCompany.website.error}
+                        value={FormCompanySelector.formCompany.website.value}
+
+                    />
+                </Grid>
+                <Grid md={3} container>
+                    <TextField
                         label="WeChat ID"
                         onChange={(value)=>{
                             dispatch(setFormCompany({
@@ -81,92 +103,6 @@ const AddNewCompanyComponent: React.FC = () => {
                         placeholder='WeChat ID'
                         error={FormCompanySelector.formCompany.wechatId.error}
                         value={FormCompanySelector.formCompany.wechatId.value}
-
-                    />
-                </Grid>
-            </Grid>
-            <Grid container className="form-row">
-                <Grid md={6}>
-                    <TextField
-                    label="Description"
-                    sx={{width: '90%'}}
-                    onChange={(value)=>{
-                        dispatch(setFormCompany({description : value.target.value}));
-                    }}
-                    placeholder='Description of contact.'
-                    multiline
-                    />
-                </Grid>
-                <Grid md={6}>
-                    <Autocomplete
-                        className='company-search-form'
-                        disablePortal
-                        options={options}
-                        loading={CompaniesSelector.getCompaniesByNameState === API_STATE.LOADING}
-                        noOptionsText='No Companies'
-                        sx={{ width: 300 }}
-                        renderInput={(params) => <TextField {...params} label="Search Parent Company by Name" />}
-                        onInputChange={(event, newValue) => appDispatch(getCompaniesByName({query : newValue, property : CompanyByNameProperty.CompaniesByName}))}
-                        isOptionEqualToValue={(option, value) => option.value === value.value}
-                        onChange={handleOnChange}
-                        />
-                </Grid>
-            </Grid>
-            <Grid container className="form-row">
-                <Grid md={3}>
-                    <FormControl fullWidth sx={{maxWidth:'85%'}}>
-                        <InputLabel id="contact-type-label">Contact Type</InputLabel>
-                        <Select
-                            labelId="contact-type-label"
-                            id="contact-type-select"
-                            label="Contact Type"
-                            onChange={(value)=>{
-                                dispatch(setFormCompany({contactType : value.target.value}));
-                            }}
-                            value={FormCompanySelector.formCompany.contactType}
-                        >
-                            <MenuItem value='DISTRIBUTOR'>Distributor</MenuItem>
-                            <MenuItem value='CUSTOMER'>Customer</MenuItem>
-                            <MenuItem value='SUPPLIER'>Supplier</MenuItem>
-                            <MenuItem value='PARTNER'>Partner</MenuItem>
-                            <MenuItem value='INVESTOR'>Investor</MenuItem>
-                        </Select>
-                    </FormControl>
-                </Grid>
-                <Grid md={4}>
-                    <FormControl fullWidth sx={{maxWidth:'85%'}}>
-                        <InputLabel id="contact-method-label">Preferred Contact Method</InputLabel>
-                        <Select
-                            labelId="contact-method-label"
-                            id="contact-method-select"
-                            label="Preferred Contact Method"
-                            onChange={(value)=>{
-                                dispatch(setFormCompany({contactMethod : value.target.value}));
-                            }}
-                            value={FormCompanySelector.formCompany.contactMethod}
-                        >
-                            <MenuItem value='EMAIL'>Email</MenuItem>
-                            <MenuItem value='PHONE'>Phone</MenuItem>
-                            <MenuItem value='WHATSAPP'>WhatsApp</MenuItem>
-                            <MenuItem value='WECHAT'>WeChat</MenuItem>
-                            <MenuItem value='FACEBOOK'>Facebook</MenuItem>
-                            <MenuItem value='LINKEDIN'>LinkedIn</MenuItem>
-                            <MenuItem value='INSTAGRAM'>Instagram</MenuItem>
-                            <MenuItem value='TWITTER'>Twitter</MenuItem>
-                            <MenuItem value='WEBSITE'>Website</MenuItem>
-                            <MenuItem value='IN_PERSON'>In Person</MenuItem>
-                            <MenuItem value='OTHER'>Other</MenuItem>
-                        </Select>
-                    </FormControl>
-                </Grid>
-                <Grid md={3}>
-                    <DatePicker
-                    label="Last Contacted" 
-                    sx={{maxWidth:'85%'}}
-                    value={dayjs(FormCompanySelector.formCompany.lastContact)} 
-                    onChange={(value) => {
-                        dispatch(setFormCompany({lastContact : value}));
-                    }} 
                     />
                 </Grid>
             </Grid>
@@ -274,6 +210,105 @@ const AddNewCompanyComponent: React.FC = () => {
                         />
                 </Grid>
             </Grid>
+            <Grid container className='form-row'>
+                <Typography variant='h6'>
+                    Contact Details
+                </Typography>
+                <Divider sx={{width : '100%'}}/>
+            </Grid>
+            <Grid container className="form-row">
+                <Grid md={6}>
+                    <TextField
+                    label="Description"
+                    sx={{width: '90%'}}
+                    onChange={(value)=>{
+                        dispatch(setFormCompany({description : value.target.value}));
+                    }}
+                    placeholder='Description of contact.'
+                    multiline
+                    value={FormCompanySelector.formCompany.description}
+                    />
+                </Grid>
+                <Grid md={6}>
+                    <Autocomplete
+                        className='company-search-form'
+                        disablePortal
+                        options={options}
+                        loading={CompaniesSelector.getCompaniesByNameState === API_STATE.LOADING}
+                        noOptionsText='No Companies'
+                        sx={{ width: 300 }}
+                        renderInput={(params) => <TextField {...params} label="Search Parent Company by Name" />}
+                        onInputChange={(event, newValue) => appDispatch(getCompaniesByName({query : newValue, property : CompanyByNameProperty.CompaniesByName}))}
+                        isOptionEqualToValue={(option, value) => option.value === value.value}
+                        onChange={handleOnChange}
+                        defaultValue={{id: '', label : FormCompanySelector.formCompany.parentEntity?.companyName || ''}}
+                        />
+                </Grid>
+            </Grid>
+            <Grid container className="form-row">
+                <Grid md={3}>
+                    <FormControl fullWidth sx={{maxWidth:'85%'}}>
+                        <InputLabel id="contact-type-label">Contact Type</InputLabel>
+                        <Select
+                            labelId="contact-type-label"
+                            id="contact-type-select"
+                            label="Contact Type"
+                            onChange={(value)=>{
+                                dispatch(setFormCompany({contactType : value.target.value}));
+                            }}
+                            value={FormCompanySelector.formCompany.contactType}
+                        >
+                            <MenuItem value='DISTRIBUTOR'>Distributor</MenuItem>
+                            <MenuItem value='CUSTOMER'>Customer</MenuItem>
+                            <MenuItem value='SUPPLIER'>Supplier</MenuItem>
+                            <MenuItem value='PARTNER'>Partner</MenuItem>
+                            <MenuItem value='INVESTOR'>Investor</MenuItem>
+                        </Select>
+                    </FormControl>
+                </Grid>
+                <Grid md={4}>
+                    <FormControl fullWidth sx={{maxWidth:'85%'}}>
+                        <InputLabel id="contact-method-label">Preferred Contact Method</InputLabel>
+                        <Select
+                            labelId="contact-method-label"
+                            id="contact-method-select"
+                            label="Preferred Contact Method"
+                            onChange={(value)=>{
+                                dispatch(setFormCompany({contactMethod : value.target.value}));
+                            }}
+                            value={FormCompanySelector.formCompany.contactMethod}
+                        >
+                            <MenuItem value='EMAIL'>Email</MenuItem>
+                            <MenuItem value='PHONE'>Phone</MenuItem>
+                            <MenuItem value='WHATSAPP'>WhatsApp</MenuItem>
+                            <MenuItem value='WECHAT'>WeChat</MenuItem>
+                            <MenuItem value='FACEBOOK'>Facebook</MenuItem>
+                            <MenuItem value='LINKEDIN'>LinkedIn</MenuItem>
+                            <MenuItem value='INSTAGRAM'>Instagram</MenuItem>
+                            <MenuItem value='TWITTER'>Twitter</MenuItem>
+                            <MenuItem value='WEBSITE'>Website</MenuItem>
+                            <MenuItem value='IN_PERSON'>In Person</MenuItem>
+                            <MenuItem value='OTHER'>Other</MenuItem>
+                        </Select>
+                    </FormControl>
+                </Grid>
+                <Grid md={3}>
+                    <DatePicker
+                    label="Last Contacted" 
+                    sx={{maxWidth:'85%'}}
+                    value={FormCompanySelector.formCompany.lastContact === null ? null : dayjs(FormCompanySelector.formCompany.lastContact)} 
+                    onChange={(value) => {
+                        dispatch(setFormCompany({lastContact : value}));
+                    }} 
+                    />
+                </Grid>
+            </Grid>
+            <Grid container className='form-row'>
+                <Typography variant='h6'>
+                    Contact Address
+                </Typography>
+                <Divider sx={{width : '100%'}}/>
+            </Grid>
             <Grid container className="form-row">
                 <Grid md={3}>
                     <TextField
@@ -297,6 +332,18 @@ const AddNewCompanyComponent: React.FC = () => {
                 </Grid>
                 <Grid md={3}>
                     <TextField
+                        label="District"
+                        onChange={(value)=>{
+                            dispatch(setFormCompany({district : value.target.value}));
+                        }}
+                        placeholder='New York'
+                        value={FormCompanySelector.formCompany.district}
+                    />
+                </Grid>
+            </Grid>           
+            <Grid container className='form-row'>
+                <Grid md={3}>
+                    <TextField
                         label="Province"
                         onChange={(value)=>{
                             dispatch(setFormCompany({province : value.target.value}));
@@ -305,7 +352,7 @@ const AddNewCompanyComponent: React.FC = () => {
                         value={FormCompanySelector.formCompany.province}
                     />
                 </Grid>
-                <Grid md={3}>
+                <Grid md={4}>
                     <Autocomplete
                     options={countries}
                     autoHighlight
@@ -337,6 +384,17 @@ const AddNewCompanyComponent: React.FC = () => {
                           }}
                         />
                     )}
+                    sx={{width : '90%'}}
+                    />
+                </Grid>
+                <Grid md={3}>
+                    <TextField
+                        label="Postal Code"
+                        onChange={(value)=>{
+                            dispatch(setFormCompany({postalCode : value.target.value}));
+                        }}
+                        placeholder='12345'
+                        value={FormCompanySelector.formCompany.postalCode}
                     />
                 </Grid>
             </Grid>
@@ -344,4 +402,4 @@ const AddNewCompanyComponent: React.FC = () => {
     );
 };
 
-export default AddNewCompanyComponent;
+export default CompanyFormComponent;

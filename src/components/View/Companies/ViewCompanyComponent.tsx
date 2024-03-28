@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { contactsSelector } from '../../../store/contactsSlice';
-import { Alert, Divider, Grid, Typography } from '@mui/material';
+import { Alert, Divider, Grid, Link, Typography } from '@mui/material';
 import getCountryPhoneAreaCode from '../../../utils/countryPhoneAreaCode';
 import { countries } from '../../../utils/CountryAutocompleteOptions';
 import Flag from '../../../utils/flags.util';
@@ -10,12 +10,15 @@ import { companiesSelector } from '../../../store/companiesSlice';
 import PersonIcon from '@mui/icons-material/Person';
 import BusinessIcon from '@mui/icons-material/Business';
 import HomeIcon from '@mui/icons-material/Home';
+import HttpIcon from '@mui/icons-material/Http';
 import PhoneIcon from '@mui/icons-material/Phone';
 import StarBorderPurple500Icon from '@mui/icons-material/StarBorderPurple500';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import ConnectWithoutContactIcon from '@mui/icons-material/ConnectWithoutContact';
 import AppSettingsAltIcon from '@mui/icons-material/AppSettingsAlt';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import { formatAddress } from '../../../utils/formatAddress';
+import { formatWebsiteURL } from '../../../utils/formatWebsite';
 
 interface ViewCompanyComponentProps {
 }
@@ -48,11 +51,14 @@ const ViewCompanyComponent: React.FC<ViewCompanyComponentProps> = () => {
                             {selector.selectedCompany?.email}
                         </Typography>
                     </Grid>
+                    {selector.selectedCompany?.contacts && 
+                    (selector.selectedCompany?.contacts?.length > 0) && 
                     <Grid md={12} container justifyContent='left' sx={{marginTop:2}}>
                         <Typography variant='h6'>
                             People
                         </Typography>
                     </Grid>
+                    }
                     <Grid md={12} container justifyContent='left'>
                         {selector.selectedCompany?.contacts?.map((contact) => 
                             <Grid md={12} container justifyContent='left' className='contact-row'>
@@ -109,7 +115,14 @@ const ViewCompanyComponent: React.FC<ViewCompanyComponentProps> = () => {
                                 {selector.selectedCompany?.parentEntity?.companyName}
                             </Typography>
                             <Typography variant='body2'>
-                                {selector.selectedCompany?.parentEntity?.streetAddress}, {selector.selectedCompany?.parentEntity?.city}, {selector.selectedCompany?.parentEntity?.province}, {countries.find((country) => country.code === selector.selectedCompany?.parentEntity?.country)?.label}
+                                {formatAddress(
+                                    selector.selectedCompany?.parentEntity?.streetAddress,
+                                    selector.selectedCompany?.parentEntity?.city,
+                                    selector.selectedCompany?.parentEntity?.district,
+                                    selector.selectedCompany?.parentEntity?.province,
+                                    selector.selectedCompany?.parentEntity?.country,
+                                    selector.selectedCompany?.parentEntity?.postalCode
+                                )}
                             </Typography>
                             <Flag countryCode={selector.selectedCompany?.parentEntity?.country}/>
                         </Grid>
@@ -123,9 +136,30 @@ const ViewCompanyComponent: React.FC<ViewCompanyComponentProps> = () => {
                         </Grid>
                         <Grid md={6} >
                             <Typography variant='body1'>
-                                {selector.selectedCompany?.streetAddress}, {selector.selectedCompany?.city}, {selector.selectedCompany?.province}, {countries.find((country) => country.code === selector.selectedCompany?.country)?.label}
+                                {formatAddress(
+                                    selector.selectedCompany?.streetAddress,
+                                    selector.selectedCompany?.city,
+                                    selector.selectedCompany?.district,
+                                    selector.selectedCompany?.province,
+                                    selector.selectedCompany?.country,
+                                    selector.selectedCompany?.postalCode
+                                )}
                             </Typography>
                             <Flag countryCode={selector.selectedCompany?.country}/>
+                        </Grid>
+                    </Grid>
+                    <Grid md={12} container className='information-row'>
+                        <Grid md={6} container justifyContent='left'>
+                            <HttpIcon sx={{width : '15px'}}/>
+                            <Typography variant='body2' sx={{marginLeft:1, marginTop:0.3}}>
+                                Website
+                            </Typography>
+                        </Grid>
+                        <Grid md={6} container>
+                            <Flag countryCode={selector.selectedCompany?.countryPhoneAreaCode}/>
+                            <Link href={selector.selectedCompany?.website ? formatWebsiteURL(selector.selectedCompany?.website) : '#'} variant='body2'>
+                                 {selector.selectedCompany?.website}
+                            </Link>
                         </Grid>
                     </Grid>
                     <Grid md={12} container className='information-row'>
