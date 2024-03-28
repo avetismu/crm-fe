@@ -1,36 +1,37 @@
 import React from "react"; // Import the useEffect hook
-import ContactsTableComponent from "../../components/ContactsTable/ContactsTableComponent";
+import ContactsTableComponent from "../../components/ContactTable/ContactTableComponent";
 import { Box, Button, Container, Grid, TextField, Typography } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { EditType, showEdit } from '../../store/editSlice'
 import { AddNewType, showAddNew } from "../../store/addNewSlice";
+import CompanyTableComponent from "../../components/CompanyTable/CompanyTable";
 import { useParams } from "react-router-dom";
-import { AppDispatch } from "../../store/store";
 import { ViewType, showView } from "../../store/viewSlice";
-import { ContactByNameProperty, fetchContacts, getContactByUUID, getContactsByName } from "../../store/contactsSlice";
+import { AppDispatch } from "../../store/store";
+import { CompanyByNameProperty, fetchCompanies, getCompaniesByName, getCompanyByUUID } from "../../store/companiesSlice";
+import { Company } from "../../models/Company";
 
 
-
-const ContactsPage: React.FC = () => {
+const CompanyPage: React.FC = () => {
 
         const dispatch = useDispatch();
         const appDispatch = useDispatch<AppDispatch>();
         const params = useParams();
 
         if(params.uuid){
-                dispatch(showView(ViewType.Contacts))
-                appDispatch(getContactByUUID(params.uuid))
+                dispatch(showView(ViewType.Companies))
+                appDispatch(getCompanyByUUID(params.uuid))
         }
 
         const showAddNewForm = () =>{
-                dispatch(showAddNew(AddNewType.Contacts))
+                dispatch(showAddNew(AddNewType.Companies))
         }
 
-        const filterContactsByName = (query: string) : void => {
+        const filterCompaniesByName = (query: string) : void => {
                 if (query.length > 0)
-                        appDispatch(getContactsByName({query : query, property : ContactByNameProperty.Contacts}))
+                        appDispatch(getCompaniesByName({query : query, property : CompanyByNameProperty.Companies}))
                 else
-                        appDispatch(fetchContacts(1))
+                        appDispatch(fetchCompanies(1))
         }
 
 
@@ -38,31 +39,31 @@ const ContactsPage: React.FC = () => {
                 <Container sx={{marginTop : "64px"}}>
                         <Box className="page-header-box">
                                 <Typography variant="h5" align="left" gutterBottom>
-                                        Contacts
+                                        Companies
                                 </Typography>
                                 <Grid container>
                                         <Grid md={6}>
                                                 <Grid container justifyContent="left">
                                                         <TextField
-                                                                id='filter-contacts'
+                                                                id='filter-companies'
                                                                 size="small"
-                                                                placeholder='Search Contacts by Name'
+                                                                placeholder='Search Companies by Name'
                                                                 sx={{width: '100%'}}
-                                                                onChange={(value) => filterContactsByName(value.target.value)}
+                                                                onChange={(value) => filterCompaniesByName(value.target.value)}
                                                         />
                                                 </Grid>
                                         </Grid>
                                         <Grid md={6}>
                                                 <Grid container justifyContent="end">
-                                                        <Button variant="outlined" onClick={() => showAddNewForm()}>Add New Contact</Button>
+                                                        <Button variant="outlined" onClick={() => showAddNewForm()}>Add New Company</Button>
                                                 </Grid>
                                         </Grid>
                                 </Grid>
                         </Box>
-                        <ContactsTableComponent />
+                        <CompanyTableComponent />
                 </Container>
                 
         )
 }
 
-export default ContactsPage
+export default CompanyPage
