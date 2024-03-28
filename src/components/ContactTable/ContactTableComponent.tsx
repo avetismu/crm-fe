@@ -8,6 +8,7 @@ import { Box, Grid, Typography } from '@mui/material';
 import getCountryPhoneAreaCode from '../../utils/countryPhoneAreaCode';
 import { ViewType, showView } from '../../store/viewSlice';
 import { useNavigate } from 'react-router-dom';
+import { formatAddress } from '../../utils/formatAddress';
 
 const columns: GridColDef[] = [
     {
@@ -57,7 +58,14 @@ const columns: GridColDef[] = [
         sortable: false,
         minWidth: 160,
         valueGetter: (params: GridValueGetterParams) =>
-        ` ${params.row.streetAddress || ''}, ${params.row.city}, ${params.row.province}, ${params.row.country}`
+            formatAddress(
+                params.row.streetAddress,
+                params.row.city,
+                params.row.district,
+                params.row.province,
+                params.row.country,
+                params.row.postalCode
+            )
     },
     {
         field: 'contactType',
@@ -72,8 +80,9 @@ const columns: GridColDef[] = [
         description: 'last contacted',
         sortable: true,
         minWidth: 160,
-        valueGetter: (params: GridValueGetterParams) =>
-        ` ${new Date(params.row.lastContact).toLocaleDateString('en-CA') || ''}`
+        valueGetter: (params: GridValueGetterParams) => 
+            params.row.lastContact ? `${new Date(params.row.lastContact).toLocaleDateString('en-CA')}` : ''
+    
     }
 
   ];
