@@ -4,13 +4,10 @@ import {EditType, editSelector, hideEdit} from '../../store/editSlice';
 import { Button, Fade, Grid, Modal, Typography } from '@mui/material';
 import { editContact, formContactSelector, resetFormContact, setFormContact } from '../../store/contactFormSlice';
 import { editCompany, formCompanySelector, resetFormCompany } from '../../store/companyFormSlice';
-import EditContactComponent from './Contacts/EditContactComponent';
 import { AppDispatch } from '../../store/store';
 import { contactsSelector } from '../../store/contactsSlice';
-import dayjs from 'dayjs';
-import { Edit } from '@mui/icons-material';
-import EditCompanyComponent from '../Form/Company/CompanyFormComponent';
 import CompanyFormComponent from '../Form/Company/CompanyFormComponent';
+import ContactFormComponent from '../Form/Contact/ContactFormComponent';
 
 
 interface EditComponentProps {
@@ -32,7 +29,7 @@ const EditComponent: React.FC<EditComponentProps> = (props) => {
     const getEditForm = (editType: EditType | undefined): ReactNode => {
         switch(editType){
             case EditType.Contacts:            
-                return <EditContactComponent/>
+                return <ContactFormComponent/>
 
             case EditType.Companies:
                 return <CompanyFormComponent/>

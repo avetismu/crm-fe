@@ -42,9 +42,9 @@ const CompanyFormComponent: React.FC = () => {
     return (
         <Grid>
             <Grid container className="form-row">
-            {FormCompanySelector.editCompanyState === API_STATE.SUCCESS &&
+            {(FormCompanySelector.postNewCompanyState === API_STATE.SUCCESS || FormCompanySelector.editCompanyState === API_STATE.SUCCESS) &&
                 <Alert className="modal-alert" severity="success">Form Submitted!</Alert>}
-            {FormCompanySelector.editCompanyState === API_STATE.ERROR &&
+            {(FormCompanySelector.postNewCompanyState === API_STATE.ERROR || FormCompanySelector.editCompanyState === API_STATE.ERROR) &&
                 <Alert className="modal-alert" severity="error">Submission Error</Alert>}
             </Grid>
             <Grid container className="form-row">
@@ -83,7 +83,7 @@ const CompanyFormComponent: React.FC = () => {
                                 }
                             }));
                         }}
-                        placeholder='WeChat ID'
+                        placeholder='Website'
                         error={FormCompanySelector.formCompany.website.error}
                         value={FormCompanySelector.formCompany.website.value}
 
@@ -344,7 +344,7 @@ const CompanyFormComponent: React.FC = () => {
             <Grid container className='form-row'>
                 <Grid md={3}>
                     <TextField
-                        label="Province"
+                        label="Province/State"
                         onChange={(value)=>{
                             dispatch(setFormCompany({province : value.target.value}));
                         }}

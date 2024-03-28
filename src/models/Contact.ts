@@ -11,6 +11,7 @@ export class Contact {
     description: string | null | undefined;
     company: Company | null | undefined;
     email: string | null | undefined;
+    website: string | null | undefined;
     countryPhoneAreaCode: CountryCode | null | undefined;    
     phoneNumber: string | null | undefined;
     whatsappCountryPhoneAreaCode: CountryCode | null | undefined;  
@@ -18,8 +19,10 @@ export class Contact {
     wechatId: string | null | undefined;
     streetAddress: string | null | undefined;
     city: string | null | undefined;
+    district: string | null | undefined;
     province: string | null | undefined;
     country: CountryCode | null | undefined;  
+    postalCode: string | null | undefined;
     contactType: ContactType | null | undefined;
     lastContact: Date | null | undefined;
     contactMethod: ContactMethod | null | undefined;
@@ -36,6 +39,7 @@ export class Contact {
         contact.description = formContact.description;
         contact.company = formContact.company;
         contact.email = formContact.email.value;
+        contact.website = formContact.website.value;
         contact.countryPhoneAreaCode = formContact.countryPhoneAreaCode;
         contact.phoneNumber = formContact.phoneNumber.value;
         contact.whatsappCountryPhoneAreaCode = formContact.whatsappCountryPhoneAreaCode;
@@ -43,8 +47,10 @@ export class Contact {
         contact.wechatId = formContact.wechatId.value;
         contact.streetAddress = formContact.streetAddress;
         contact.city = formContact.city;
+        contact.district = formContact.district;
         contact.province = formContact.province;
         contact.country = formContact.country;
+        contact.postalCode = formContact.postalCode;
         contact.contactType = formContact.contactType;
         contact.lastContact = formContact.lastContact;
         contact.contactMethod = formContact.contactMethod;
@@ -67,6 +73,10 @@ export class Contact {
                 value : contact.wechatId,
                 error : false
             },
+            website : {
+                value : contact.website,
+                error : false
+            },
             countryPhoneAreaCode : contact.countryPhoneAreaCode,
             phoneNumber : {
                 value : contact.phoneNumber,
@@ -79,8 +89,10 @@ export class Contact {
             },
             streetAddress : contact.streetAddress,
             city : contact.city,
+            district : contact.district,
             province : contact.province,
             country : contact.country,
+            postalCode : contact.postalCode,
             contactType : contact.contactType,
             lastContact : contact.lastContact,
             contactMethod : contact.contactMethod

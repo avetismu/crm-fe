@@ -11,11 +11,11 @@ import { CompanyByNameProperty, companiesSelector, getCompaniesByName } from '..
 import { Company } from '../../../models/Company';
 import { AppDispatch } from '../../../store/store';
 import { Form, useFetcher } from 'react-router-dom';
-import { isEmail, isPhoneNumber, isWeChatID } from '../../../utils/validation.util';
+import { isEmail, isPhoneNumber, isWeChatID, isWebsite } from '../../../utils/validation.util';
 import { formContactSelector, postNewContactStateSelector, setFormContact } from '../../../store/contactFormSlice';
 import dayjs from 'dayjs';
 
-const EditContactComponent: React.FC = () => {
+const ContactFormComponent: React.FC = () => {
 
     const dispatch = useDispatch();
     const appDispatch = useDispatch<AppDispatch>();
@@ -51,9 +51,9 @@ const EditContactComponent: React.FC = () => {
     return (
         <Grid>
             <Grid container className="form-row">
-            {FormContactSelector.editContactState === API_STATE.SUCCESS &&
+            {(FormContactSelector.postNewContactState === API_STATE.SUCCESS || FormContactSelector.editContactState === API_STATE.SUCCESS) &&
                 <Alert className="modal-alert" severity="success">Form Submitted!</Alert>}
-            {FormContactSelector.editContactState === API_STATE.ERROR &&
+            {(FormContactSelector.postNewContactState === API_STATE.ERROR || FormContactSelector.editContactState === API_STATE.ERROR) &&
                 <Alert className="modal-alert" severity="error">Submission Error</Alert>}
             </Grid>
             <Grid container className="form-row">
@@ -77,6 +77,8 @@ const EditContactComponent: React.FC = () => {
                     value={FormContactSelector.formContact.lastName}
                     />
                 </Grid>
+            </Grid>
+            <Grid container className="form-row">
                 <Grid md={3}>
                     <TextField
                     label="Email"
@@ -95,6 +97,23 @@ const EditContactComponent: React.FC = () => {
                 </Grid>
                 <Grid md={3} container>
                     <TextField
+                        label="Website"
+                        onChange={(value)=>{
+                            dispatch(setFormContact({
+                                website : {
+                                    value : value.target.value,
+                                    error : !isWebsite(value.target.value)
+                                }
+                            }));
+                        }}
+                        placeholder='Website'
+                        error={FormContactSelector.formContact.website.error}
+                        value={FormContactSelector.formContact.website.value}
+
+                    />
+                </Grid>
+                <Grid md={3} container>
+                    <TextField
                         label="WeChat ID"
                         onChange={(value)=>{
                             dispatch(setFormContact({
@@ -107,94 +126,6 @@ const EditContactComponent: React.FC = () => {
                         placeholder='WeChat ID'
                         error={FormContactSelector.formContact.wechatId.error}
                         value={FormContactSelector.formContact.wechatId.value}
-                    />
-                </Grid>
-            </Grid>
-            <Grid container className="form-row">
-                <Grid md={6}>
-                    <TextField
-                    label="Description"
-                    sx={{width: '90%'}}
-                    onChange={(value)=>{
-                        dispatch(setFormContact({description : value.target.value}))
-                    }}
-                    placeholder='Description of contact.'
-                    multiline
-                    value={FormContactSelector.formContact.description}
-                    />
-                </Grid>
-                <Grid md={6}>
-                    <Autocomplete
-                        className='company-search-form'
-                        disablePortal
-                        options={options}
-                        loading={CompaniesSelector.getCompaniesByNameState === API_STATE.LOADING}
-                        noOptionsText='No Companies'
-                        sx={{ width: 300 }}
-                        renderInput={(params) => <TextField {...params} label="Search Company by Name" />}
-                        onInputChange={(event, newValue) => appDispatch(getCompaniesByName({query : newValue, property : CompanyByNameProperty.CompaniesByName}))}
-                        isOptionEqualToValue={(option, value) => option.value === value.value}
-                        onChange={handleOnChange}
-                        defaultValue={{id: '', label : FormContactSelector.formContact.company?.companyName || ''}}
-                        />
-                </Grid>
-            </Grid>
-            <Grid container className="form-row">
-            <Grid md={3}>
-                    <FormControl fullWidth sx={{maxWidth:'85%'}}>
-                        <InputLabel id="contact-type-label">Contact Type</InputLabel>
-                        <Select
-                            labelId="contact-type-label"
-                            id="contact-type-select"
-                            label="Contact Type"
-                            onChange={(value)=>{
-                                dispatch(setFormContact({contactType : value.target.value}))
-                            }}
-                            value={FormContactSelector.formContact.contactType}
-                        >
-                            <MenuItem value='DISTRIBUTOR'>Distributor</MenuItem>
-                            <MenuItem value='CUSTOMER'>Customer</MenuItem>
-                            <MenuItem value='SUPPLIER'>Supplier</MenuItem>
-                            <MenuItem value='PARTNER'>Partner</MenuItem>
-                            <MenuItem value='INVESTOR'>Investor</MenuItem>
-                        </Select>
-                    </FormControl>
-                </Grid>
-                <Grid md={4}>
-                    <FormControl fullWidth sx={{maxWidth:'85%'}}>
-                        <InputLabel id="contact-method-label">Preferred Contact Method</InputLabel>
-                        <Select
-                            labelId="contact-method-label"
-                            id="contact-method-select"
-                            label="Preferred Contact Method"
-                            onChange={(value)=>{
-                                dispatch(setFormContact({ contactMethod : value.target.value}))
-                            }}
-                            value={FormContactSelector.formContact.contactMethod}
-                        >
-                            
-                            <MenuItem value='EMAIL'>Email</MenuItem>
-                            <MenuItem value='PHONE'>Phone</MenuItem>
-                            <MenuItem value='WHATSAPP'>WhatsApp</MenuItem>
-                            <MenuItem value='WECHAT'>WeChat</MenuItem>
-                            <MenuItem value='FACEBOOK'>Facebook</MenuItem>
-                            <MenuItem value='LINKEDIN'>LinkedIn</MenuItem>
-                            <MenuItem value='INSTAGRAM'>Instagram</MenuItem>
-                            <MenuItem value='TWITTER'>Twitter</MenuItem>
-                            <MenuItem value='WEBSITE'>Website</MenuItem>
-                            <MenuItem value='IN_PERSON'>In Person</MenuItem>
-                            <MenuItem value='OTHER'>Other</MenuItem>
-                        </Select>
-                    </FormControl>
-                </Grid>
-                <Grid md={3}>
-                    <DatePicker
-                    label="Last Contacted" 
-                    sx={{maxWidth:'85%'}}
-                    value={dayjs(FormContactSelector.formContact.lastContact)} 
-                    onChange={(value) => {
-                        dispatch(setFormContact({lastContact : value?.toString()}));
-                    }} 
                     />
                 </Grid>
             </Grid>
@@ -300,6 +231,106 @@ const EditContactComponent: React.FC = () => {
                         />
                 </Grid>
             </Grid>
+            <Grid container className='form-row'>
+                <Typography variant='h6'>
+                    Contact Details
+                </Typography>
+                <Divider sx={{width : '100%'}}/>
+            </Grid>
+            <Grid container className="form-row">
+                <Grid md={6}>
+                    <TextField
+                    label="Description"
+                    sx={{width: '90%'}}
+                    onChange={(value)=>{
+                        dispatch(setFormContact({description : value.target.value}))
+                    }}
+                    placeholder='Description of contact.'
+                    multiline
+                    value={FormContactSelector.formContact.description}
+                    />
+                </Grid>
+                <Grid md={6}>
+                    <Autocomplete
+                        className='company-search-form'
+                        disablePortal
+                        options={options}
+                        loading={CompaniesSelector.getCompaniesByNameState === API_STATE.LOADING}
+                        noOptionsText='No Companies'
+                        sx={{ width: 300 }}
+                        renderInput={(params) => <TextField {...params} label="Search Company by Name" />}
+                        onInputChange={(event, newValue) => appDispatch(getCompaniesByName({query : newValue, property : CompanyByNameProperty.CompaniesByName}))}
+                        isOptionEqualToValue={(option, value) => option.value === value.value}
+                        onChange={handleOnChange}
+                        defaultValue={{id: '', label : FormContactSelector.formContact.company?.companyName || ''}}
+                        />
+                </Grid>
+            </Grid>
+            <Grid container className="form-row">
+            <Grid md={3}>
+                    <FormControl fullWidth sx={{maxWidth:'85%'}}>
+                        <InputLabel id="contact-type-label">Contact Type</InputLabel>
+                        <Select
+                            labelId="contact-type-label"
+                            id="contact-type-select"
+                            label="Contact Type"
+                            onChange={(value)=>{
+                                dispatch(setFormContact({contactType : value.target.value}))
+                            }}
+                            value={FormContactSelector.formContact.contactType}
+                        >
+                            <MenuItem value='DISTRIBUTOR'>Distributor</MenuItem>
+                            <MenuItem value='CUSTOMER'>Customer</MenuItem>
+                            <MenuItem value='SUPPLIER'>Supplier</MenuItem>
+                            <MenuItem value='PARTNER'>Partner</MenuItem>
+                            <MenuItem value='INVESTOR'>Investor</MenuItem>
+                        </Select>
+                    </FormControl>
+                </Grid>
+                <Grid md={4}>
+                    <FormControl fullWidth sx={{maxWidth:'85%'}}>
+                        <InputLabel id="contact-method-label">Preferred Contact Method</InputLabel>
+                        <Select
+                            labelId="contact-method-label"
+                            id="contact-method-select"
+                            label="Preferred Contact Method"
+                            onChange={(value)=>{
+                                dispatch(setFormContact({ contactMethod : value.target.value}))
+                            }}
+                            value={FormContactSelector.formContact.contactMethod}
+                        >
+                            
+                            <MenuItem value='EMAIL'>Email</MenuItem>
+                            <MenuItem value='PHONE'>Phone</MenuItem>
+                            <MenuItem value='WHATSAPP'>WhatsApp</MenuItem>
+                            <MenuItem value='WECHAT'>WeChat</MenuItem>
+                            <MenuItem value='FACEBOOK'>Facebook</MenuItem>
+                            <MenuItem value='LINKEDIN'>LinkedIn</MenuItem>
+                            <MenuItem value='INSTAGRAM'>Instagram</MenuItem>
+                            <MenuItem value='TWITTER'>Twitter</MenuItem>
+                            <MenuItem value='WEBSITE'>Website</MenuItem>
+                            <MenuItem value='IN_PERSON'>In Person</MenuItem>
+                            <MenuItem value='OTHER'>Other</MenuItem>
+                        </Select>
+                    </FormControl>
+                </Grid>
+                <Grid md={3}>
+                    <DatePicker
+                    label="Last Contacted" 
+                    sx={{maxWidth:'85%'}}
+                    value={FormContactSelector.formContact.lastContact === null ? null : dayjs(FormContactSelector.formContact.lastContact)} 
+                    onChange={(value) => {
+                        dispatch(setFormContact({lastContact : value?.toString()}));
+                    }} 
+                    />
+                </Grid>
+            </Grid>
+            <Grid container className='form-row'>
+                <Typography variant='h6'>
+                    Contact Address
+                </Typography>
+                <Divider sx={{width : '100%'}}/>
+            </Grid>
             <Grid container className="form-row">
                 <Grid md={3}>
                     <TextField
@@ -323,6 +354,18 @@ const EditContactComponent: React.FC = () => {
                 </Grid>
                 <Grid md={3}>
                     <TextField
+                        label="District"
+                        onChange={(value)=>{
+                            dispatch(setFormContact({district : value.target.value}));
+                        }}
+                        placeholder='New York'
+                        value={FormContactSelector.formContact.district}
+                    />
+                </Grid>
+            </Grid>           
+            <Grid container className='form-row'>
+                <Grid md={3}>
+                    <TextField
                         label="Province/State"
                         onChange={(value)=>{
                             dispatch(setFormContact({province : value.target.value}))
@@ -331,7 +374,7 @@ const EditContactComponent: React.FC = () => {
                         value={FormContactSelector.formContact.province}
                     />
                 </Grid>
-                <Grid md={3}>
+                <Grid md={4}>
                     <Autocomplete
                     options={countries}
                     autoHighlight
@@ -363,6 +406,17 @@ const EditContactComponent: React.FC = () => {
                           }}
                         />
                     )}
+                    sx={{width : '90%'}}
+                    />
+                </Grid>
+                <Grid md={3}>
+                    <TextField
+                        label="Postal Code"
+                        onChange={(value)=>{
+                            dispatch(setFormContact({postalCode : value.target.value}));
+                        }}
+                        placeholder='12345'
+                        value={FormContactSelector.formContact.postalCode}
                     />
                 </Grid>
             </Grid>
@@ -370,4 +424,4 @@ const EditContactComponent: React.FC = () => {
     );
 };
 
-export default EditContactComponent;
+export default ContactFormComponent;
