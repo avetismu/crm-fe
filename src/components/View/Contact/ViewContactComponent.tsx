@@ -125,7 +125,6 @@ const ViewContactComponent: React.FC<ViewContactComponentProps> = () => {
                             </Typography>
                         </Grid>
                         <Grid md={6} container>
-                            <Flag countryCode={selector.selectedContact?.countryPhoneAreaCode}/>
                             <Link href={selector.selectedContact?.website ? formatWebsiteURL(selector.selectedContact?.website) : '#'} variant='body2'>
                                  {selector.selectedContact?.website}
                             </Link>
