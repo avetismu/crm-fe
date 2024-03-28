@@ -19,6 +19,7 @@ import AppSettingsAltIcon from '@mui/icons-material/AppSettingsAlt';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import { formatAddress } from '../../../utils/formatAddress';
 import { formatWebsiteURL } from '../../../utils/formatWebsite';
+import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward';
 
 interface ViewCompanyComponentProps {
 }
@@ -42,7 +43,7 @@ const ViewCompanyComponent: React.FC<ViewCompanyComponentProps> = () => {
                         </Typography>
                     </Grid>
                     <Grid md={12} container justifyContent='center'>
-                        <Typography variant='body1'>
+                        <Typography variant='body2' sx={{paddingLeft: 5, paddingRight:5}}>
                             {selector.selectedCompany?.description}
                         </Typography>
                     </Grid>
@@ -61,21 +62,27 @@ const ViewCompanyComponent: React.FC<ViewCompanyComponentProps> = () => {
                     }
                     <Grid md={12} container justifyContent='left'>
                         {selector.selectedCompany?.contacts?.map((contact) => 
-                            <Grid md={12} container justifyContent='left' className='contact-row'>
-                                <Grid md={2}>
-                                    <PersonIcon/>
+
+                                <Grid md={12} container justifyContent='left' className='contact-row'>
+                                    <Grid md={1}>
+                                        <PersonIcon/>
+                                    </Grid>
+                                    <Grid md={6}>
+                                        <Typography variant='body1'>
+                                            {contact.firstName} {contact.lastName}
+                                        </Typography>
+                                    </Grid>
+                                    <Grid md={4}>
+                                        <Typography variant='body2'>
+                                            {contact.description}
+                                        </Typography>
+                                    </Grid>
+                                    <Grid md={1}>
+                                        <Link href={`/contacts/${contact.uuid}`}>
+                                            <ArrowOutwardIcon/>
+                                        </Link>
+                                    </Grid>
                                 </Grid>
-                                <Grid md={6}>
-                                    <Typography variant='body1'>
-                                        {contact.firstName} {contact.lastName}
-                                    </Typography>
-                                </Grid>
-                                <Grid md={4}>
-                                    <Typography variant='body2'>
-                                        {contact.description}
-                                    </Typography>
-                                </Grid>
-                            </Grid>
                         )}
                     </Grid>
                     {selector.selectedCompany?.subEntities && selector.selectedCompany?.subEntities?.length > 0 &&

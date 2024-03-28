@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { contactsSelector } from '../../../store/contactsSlice';
-import { Alert, Divider, Grid, Typography } from '@mui/material';
+import { Alert, Divider, Grid, Link, Typography } from '@mui/material';
 import getCountryPhoneAreaCode from '../../../utils/countryPhoneAreaCode';
 import { countries } from '../../../utils/CountryAutocompleteOptions';
 import Flag from '../../../utils/flags.util';
@@ -9,12 +9,16 @@ import { API_STATE } from '../../../store/api';
 
 import BusinessIcon from '@mui/icons-material/Business';
 import HomeIcon from '@mui/icons-material/Home';
+import HttpIcon from '@mui/icons-material/Http';
 import PhoneIcon from '@mui/icons-material/Phone';
 import StarBorderPurple500Icon from '@mui/icons-material/StarBorderPurple500';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import ConnectWithoutContactIcon from '@mui/icons-material/ConnectWithoutContact';
 import AppSettingsAltIcon from '@mui/icons-material/AppSettingsAlt';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import { formatWebsiteURL } from '../../../utils/formatWebsite';
+import { formatAddress } from '../../../utils/formatAddress';
+import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward';
 
 interface ViewContactComponentProps {
 }
@@ -56,15 +60,26 @@ const ViewContactComponent: React.FC<ViewContactComponentProps> = () => {
                                 Company
                             </Typography>
                         </Grid>
+                        {selector.selectedContact?.company && 
                         <Grid md={6} >
-                            <Typography variant='body1'>
-                                {selector.selectedContact?.company?.companyName}
-                            </Typography>
+                            <Link href={`/companies/${selector.selectedContact?.company?.uuid}`} style={{ textDecoration: 'none' }}>
+                                <Typography variant='body1'>
+                                    {selector.selectedContact?.company?.companyName}<ArrowOutwardIcon sx={{marginLeft: '10px', width:'15px', height:'15px'}}/>
+                                </Typography>
+                            </Link>
                             <Typography variant='body2'>
-                                {selector.selectedContact?.company?.streetAddress}, {selector.selectedContact?.company?.city}, {selector.selectedContact?.company?.province}, {countries.find((country) => country.code === selector.selectedContact?.company?.country)?.label}
+                                {formatAddress(
+                                    selector.selectedContact?.company?.streetAddress, 
+                                    selector.selectedContact?.company?.city,
+                                    selector.selectedContact?.company?.district,
+                                    selector.selectedContact?.company?.province, 
+                                    selector.selectedContact?.company?.country,
+                                    selector.selectedContact?.company?.postalCode
+                                )}
                             </Typography>
                             <Flag countryCode={selector.selectedContact?.company?.country}/>
-                        </Grid>
+                            
+                        </Grid>}
                     </Grid>
                     <Grid md={12} container className='information-row'>
                         <Grid md={6} container justifyContent='left'>
@@ -75,9 +90,17 @@ const ViewContactComponent: React.FC<ViewContactComponentProps> = () => {
                         </Grid>
                         <Grid md={6}>
                             <Typography variant='body1'>
-                                {selector.selectedContact?.streetAddress}, {selector.selectedContact?.city}, {selector.selectedContact?.province}, {countries.find((country) => country.code === selector.selectedContact?.country)?.label}
+                            {formatAddress(
+                                    selector.selectedContact?.streetAddress,
+                                    selector.selectedContact?.city,
+                                    selector.selectedContact?.district,
+                                    selector.selectedContact?.province,
+                                    selector.selectedContact?.country,
+                                    selector.selectedContact?.postalCode
+                                )}
                             </Typography>
                             <Flag countryCode={selector.selectedContact?.country}/>
+
                         </Grid>
                     </Grid>
                     <Grid md={12} container className='information-row'>
@@ -92,6 +115,19 @@ const ViewContactComponent: React.FC<ViewContactComponentProps> = () => {
                             <Typography variant='body2' sx={{marginLeft:'10px'}}>
                                  {getCountryPhoneAreaCode(selector.selectedContact?.countryPhoneAreaCode)} {selector.selectedContact?.phoneNumber}
                             </Typography>
+                        </Grid>
+                    </Grid>
+                    <Grid md={12} container className='information-row'>
+                        <Grid md={6} container justifyContent='left'>
+                            <HttpIcon sx={{width : '15px'}}/>
+                            <Typography variant='body2' sx={{marginLeft:1, marginTop:0.3}}>
+                                Website
+                            </Typography>
+                        </Grid>
+                        <Grid md={6} container>
+                            <Link href={selector.selectedContact?.website ? formatWebsiteURL(selector.selectedContact?.website) : '#'} variant='body2'>
+                                 {selector.selectedContact?.website}
+                            </Link>
                         </Grid>
                     </Grid>
                     <Grid md={12} container className='information-row'>

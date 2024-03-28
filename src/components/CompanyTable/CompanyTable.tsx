@@ -9,6 +9,7 @@ import getCountryPhoneAreaCode from '../../utils/countryPhoneAreaCode';
 import { ViewType, showView } from '../../store/viewSlice';
 import { companiesSelector, fetchCompanies, setSelectedCompany } from '../../store/companiesSlice';
 import { useNavigate } from 'react-router-dom';
+import { formatAddress } from '../../utils/formatAddress';
 
 interface Column {
     id: 'name' | 'email' | 'phone' | 'location' | 'type' | 'contact_method' | 'last_contacted';
@@ -55,7 +56,14 @@ const columns: GridColDef[] = [
         sortable: false,
         minWidth: 160,
         valueGetter: (params: GridValueGetterParams) =>
-        ` ${params.row.streetAddress || ''}, ${params.row.city}, ${params.row.province}, ${params.row.country}`
+            formatAddress(
+                params.row.streetAddress,
+                params.row.city,
+                params.row.district,
+                params.row.province,
+                params.row.country,
+                params.row.postalCode
+            )
     },
     {
         field: 'contactType',
@@ -71,7 +79,7 @@ const columns: GridColDef[] = [
         sortable: true,
         minWidth: 160,
         valueGetter: (params: GridValueGetterParams) =>
-        ` ${new Date(params.row.lastContact).toLocaleDateString('en-CA') || ''}`
+            params.row.lastContact ? `${new Date(params.row.lastContact).toLocaleDateString('en-CA')}` : ''
     }
 
   ];

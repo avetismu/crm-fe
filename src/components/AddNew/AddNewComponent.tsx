@@ -1,20 +1,14 @@
 import React, { Component, ReactNode } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {AddNewType, addNewSelector, hideAddNew} from '../../store/addNewSlice';
-import { Button, Divider, Fade, Grid, Modal, Typography } from '@mui/material';
-import AddNewContactComponent from './Contacts/AddNewContactComponent';
-
+import { Button, Fade, Grid, Modal, Typography } from '@mui/material';
 import { AppDispatch, RootState } from '../../store/store';
 import { createContact, formContactSelector, resetFormContact } from '../../store/contactFormSlice';
 import { createCompany, formCompanySelector, resetFormCompany } from '../../store/companyFormSlice';
-import { contactsSelector } from '../../store/contactsSlice';
 import CompanyFormComponent from '../Form/Company/CompanyFormComponent';
+import ContactFormComponent from '../Form/Contact/ContactFormComponent';
 
-interface AddNewComponentProps {
-    // Define your props here
-}
-
-const AddNewComponent: React.FC<AddNewComponentProps> = (props) => {
+const AddNewComponent: React.FC = () => {
     // Define your state and event handlers here
     const dispatch = useDispatch();
     const appDispatch = useDispatch<AppDispatch>();
@@ -26,8 +20,7 @@ const AddNewComponent: React.FC<AddNewComponentProps> = (props) => {
     const getNewForm = (addNewType: AddNewType | undefined): ReactNode => {
         switch(addNewType){
             case AddNewType.Contacts:
-
-                return <AddNewContactComponent/>
+                return <ContactFormComponent/>
             case AddNewType.Companies:
                 return <CompanyFormComponent/>
         }

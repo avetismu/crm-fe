@@ -8,12 +8,16 @@ interface ContactFormState {
         uuid : string,
         firstName: string;
         lastName: string;
-        description: string;
+        description: string | null;
         company: any | null | undefined;
         email: {
           value: string;
           error: boolean;
         };
+        website: {
+          value: string;
+          error: boolean;
+      };
         countryPhoneAreaCode: string | null;
         phoneNumber: {
           value: string;
@@ -28,10 +32,12 @@ interface ContactFormState {
           value: string;
           error: boolean;
         };
-        streetAddress: string;
-        city: string;
-        province: string;
-        country: string;
+        streetAddress: string | null;
+        city: string | null;
+        district: string | null;
+        province: string | null;
+        country: string | null;
+        postalCode : string | null;
         contactType: string | null;
         lastContact: string | null;
         contactMethod: string | null;
@@ -51,6 +57,10 @@ const initialState: ContactFormState = {
           value: '',
           error: false
         },
+        website : {
+          value: '',
+          error: false,
+      },
         countryPhoneAreaCode: null,
         phoneNumber: {
           value: '',
@@ -67,11 +77,13 @@ const initialState: ContactFormState = {
         },
         streetAddress: '',
         city: '',
+        district:'',
         province: '',
-        country: '',
-        contactType: '',
-        lastContact:  new Date().toDateString(),
-        contactMethod: ''
+        country: null,
+        postalCode : null,
+        contactType: null,
+        lastContact:  null,
+        contactMethod: null
       },
       postNewContactState: API_STATE.IDLE,
       editContactState: API_STATE.IDLE

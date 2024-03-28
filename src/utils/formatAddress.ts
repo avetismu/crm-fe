@@ -20,22 +20,22 @@ export const formatAddress = (
     postalCode : string | null | undefined
     ) : string => {
     let address = ''
-    if (streetAddress && streetAddress !== '') {
+    if (streetAddress && streetAddress !== undefined && streetAddress !== '') {
         address += streetAddress
     }
-    if (city && city !== '') {
+    if (city && city !== undefined && city !== '') {
         address += ', ' + city
     }
-    if (district && district !== '') {
+    if (district && district !== undefined && district !== '') {
         address += ', ' + district
     }
-    if (province && province !== '') {
+    if (province && province !== undefined && province !== '') {
         address += ', ' + province
     }
-    if (countryCode) {
+    if (countryCode && countryCode !== undefined) {
         address += ', ' + countries.find((country) => country.code === countryCode)?.label
     }
-    if (postalCode && postalCode !== '') {
+    if (postalCode && postalCode !== undefined && postalCode !== '') {
         address += ', ' + postalCode
     }
 
