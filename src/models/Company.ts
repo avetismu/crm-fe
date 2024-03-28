@@ -10,6 +10,7 @@ export class Company {
     companyName: string | null | undefined;
     description: string | null | undefined;
     email: string | null | undefined;
+    website: string | null |undefined;
     countryPhoneAreaCode: CountryCode | null | undefined;    
     phoneNumber: string | null | undefined;
     whatsappCountryPhoneAreaCode: CountryCode | null | undefined;  
@@ -17,8 +18,10 @@ export class Company {
     wechatId: string | null | undefined;
     streetAddress: string | null | undefined;
     city: string | null | undefined;
+    district : string | null | undefined;
     province: string | null | undefined;
-    country: CountryCode | null | undefined;  
+    country: CountryCode | null | undefined;
+    postalCode : string | null | undefined;
     contactType: ContactType | null | undefined;
     lastContact: Date | null | undefined;
     contactMethod: ContactMethod | null | undefined;
@@ -35,6 +38,7 @@ export class Company {
         company.companyName = formCompany.companyName;
         company.description = formCompany.description;
         company.email = formCompany.email.value;
+        company.website = formCompany.website.value;
         company.countryPhoneAreaCode = formCompany.countryPhoneAreaCode;
         company.phoneNumber = formCompany.phoneNumber.value;
         company.whatsappCountryPhoneAreaCode = formCompany.whatsappCountryPhoneAreaCode;
@@ -42,8 +46,10 @@ export class Company {
         company.wechatId = formCompany.wechatId.value;
         company.streetAddress = formCompany.streetAddress;
         company.city = formCompany.city;
+        company.district = formCompany.district;
         company.province = formCompany.province;
         company.country = formCompany.country;
+        company.postalCode = formCompany.postalCode;
         company.contactMethod = formCompany.contactMethod;
         company.contactType = formCompany.contactType;
         company.lastContact = formCompany.lastContact;
@@ -60,6 +66,10 @@ export class Company {
             description: company.description,
             email: {
                 value: company.email,
+                error: false,
+            },
+            website: {
+                value: company.website,
                 error: false,
             },
             countryPhoneAreaCode: company.countryPhoneAreaCode,
@@ -79,7 +89,9 @@ export class Company {
             streetAddress: company.streetAddress,
             city: company.city,
             province: company.province,
+            district: company.district,
             country: company.country,
+            postalCode: company.postalCode,
             contactType: company.contactType,
             lastContact: company.lastContact,
             contactMethod: company.contactMethod,

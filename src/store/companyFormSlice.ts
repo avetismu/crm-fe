@@ -13,12 +13,16 @@ interface CompanyFormState {
             value: string;
             error: boolean;
         };
-        countryPhoneAreaCode : string;
+        website: {
+            value: string;
+            error: boolean;
+        };
+        countryPhoneAreaCode : string | null;
         phoneNumber: {
             value: string;
             error: boolean;
         };
-        whatsappCountryPhoneAreaCode : string;
+        whatsappCountryPhoneAreaCode : string | null;
         whatsappNumber : {
             value: string;
             error: boolean;
@@ -27,12 +31,14 @@ interface CompanyFormState {
             value: string;
             error: boolean;
         };
-        streetAddress: string;
-        city: string;
-        province: string;
-        country: string;
-        contactType: string;
-        contactMethod: string;
+        streetAddress: string | null;
+        city: string | null;
+        district: string | null;
+        province: string | null;
+        country: string | null;
+        postalCode : string | null;
+        contactType: string | null;
+        contactMethod: string | null;
         lastContact: string | null;
         parentEntity : any;
         subEntities : any[];
@@ -51,12 +57,16 @@ const initialState: CompanyFormState = {
             value: '',
             error: false,
         },
-        countryPhoneAreaCode: '',
+        website : {
+            value: '',
+            error: false,
+        },
+        countryPhoneAreaCode: null,
         phoneNumber: {
             value: '',
             error: false,
         },
-        whatsappCountryPhoneAreaCode: '',
+        whatsappCountryPhoneAreaCode: null,
         whatsappNumber: {
             value: '',
             error: false,
@@ -68,10 +78,12 @@ const initialState: CompanyFormState = {
         streetAddress: '',
         city: '',
         province: '',
-        country: '',
-        contactType : '',
-        lastContact : new Date().toDateString(),
-        contactMethod : '',
+        district:'',
+        country: null,
+        postalCode : null,
+        contactType : null,
+        lastContact : null,
+        contactMethod : null,
         parentEntity: null,
         subEntities: [],
         contacts: [],

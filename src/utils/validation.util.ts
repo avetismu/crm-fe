@@ -12,3 +12,8 @@ export const isPhoneNumber = (phoneNumber: string): boolean => {
     const phoneRegex = /^\d{6,14}$/;
     return phoneRegex.test(phoneNumber);
 }
+
+export const isWebsite = (website: string): boolean => {
+    const websiteRegex = /(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z]{2,}(\.[a-zA-Z]{2,})(\.[a-zA-Z]{2,})?\/[a-zA-Z0-9]{2,}|((https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z]{2,}(\.[a-zA-Z]{2,})(\.[a-zA-Z]{2,})?)|(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}\.[a-zA-Z0-9]{2,}\.[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})?/g;
+    return websiteRegex.test(website);
+}
