@@ -2,14 +2,15 @@ import React, { ReactNode, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {EditType, editSelector, hideEdit} from '../../store/editSlice';
 import { Button, Fade, Grid, Modal, Typography } from '@mui/material';
-import { editContact, formContactSelector, setFormContact } from '../../store/contactFormSlice';
-import { editCompany, formCompanySelector } from '../../store/companyFormSlice';
+import { editContact, formContactSelector, resetFormContact, setFormContact } from '../../store/contactFormSlice';
+import { editCompany, formCompanySelector, resetFormCompany } from '../../store/companyFormSlice';
 import EditContactComponent from './Contacts/EditContactComponent';
 import { AppDispatch } from '../../store/store';
 import { contactsSelector } from '../../store/contactsSlice';
 import dayjs from 'dayjs';
 import { Edit } from '@mui/icons-material';
-import EditCompanyComponent from './Companies/EditCompanyComponent';
+import EditCompanyComponent from '../Form/Company/CompanyFormComponent';
+import CompanyFormComponent from '../Form/Company/CompanyFormComponent';
 
 
 interface EditComponentProps {
@@ -34,7 +35,7 @@ const EditComponent: React.FC<EditComponentProps> = (props) => {
                 return <EditContactComponent/>
 
             case EditType.Companies:
-                return <EditCompanyComponent/>
+                return <CompanyFormComponent/>
         }
     }
 
@@ -67,6 +68,17 @@ const EditComponent: React.FC<EditComponentProps> = (props) => {
         return false
     }
 
+    const resetEdit = (editType: EditType | undefined) : void => {
+        switch(editType){
+            case EditType.Contacts:
+                dispatch(resetFormContact())
+                break;
+            case EditType.Companies:
+                dispatch(resetFormCompany())
+                break;
+        }
+    }
+
     return (
         <Modal open={EditSelector.isVisible}> 
             <Fade in={EditSelector.isVisible}>
@@ -81,8 +93,8 @@ const EditComponent: React.FC<EditComponentProps> = (props) => {
                             {getEditForm(EditSelector.type)}
                         </Grid>
                         <Grid container justifyContent="center">
-                            <Button variant="contained" sx={{marginRight:"1em"}} onClick={() => submit(EditSelector.type)} disabled={!isFormValid(EditSelector.type)}>Submit</Button>
-                            <Button variant="outlined" onClick={()=>{dispatch(hideEdit())}}>Close</Button>
+                            <Button variant="contained" sx={{marginRight:"1em"}} onClick={() => submit(EditSelector.type) } disabled={!isFormValid(EditSelector.type)}>Submit</Button>
+                            <Button variant="outlined" onClick={()=>{dispatch(hideEdit()); resetEdit(EditSelector.type)}}>Close</Button>
                         </Grid>
                     </Grid>
                 </Grid>

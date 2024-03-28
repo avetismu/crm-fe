@@ -5,10 +5,10 @@ import { Button, Divider, Fade, Grid, Modal, Typography } from '@mui/material';
 import AddNewContactComponent from './Contacts/AddNewContactComponent';
 
 import { AppDispatch, RootState } from '../../store/store';
-import AddNewCompanyComponent from './Companies/AddNewCompanyComponent';
 import { createContact, formContactSelector, resetFormContact } from '../../store/contactFormSlice';
 import { createCompany, formCompanySelector, resetFormCompany } from '../../store/companyFormSlice';
 import { contactsSelector } from '../../store/contactsSlice';
+import CompanyFormComponent from '../Form/Company/CompanyFormComponent';
 
 interface AddNewComponentProps {
     // Define your props here
@@ -29,7 +29,7 @@ const AddNewComponent: React.FC<AddNewComponentProps> = (props) => {
 
                 return <AddNewContactComponent/>
             case AddNewType.Companies:
-                return <AddNewCompanyComponent/>
+                return <CompanyFormComponent/>
         }
     }
 
