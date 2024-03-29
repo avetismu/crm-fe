@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import ContactsPage from "../pages/Contact/ContactPage";
-import CompaniesPage from "../pages/Company/CompanyPage";
+import ProductPage from "../pages/Product/ProductPage";
+import CompanyPage from "../pages/Company/CompanyPage";
 
 const Router = createBrowserRouter([
     {
@@ -18,10 +19,19 @@ const Router = createBrowserRouter([
     },
     {
         path: "/companies",
-        element: <CompaniesPage />,
+        element: <CompanyPage />,
         children: [
           {
             path: "/companies/:uuid"
+          }         
+        ]
+    },
+    {
+      path: "/products",
+        element: <ProductPage />,
+        children: [
+          {
+            path: "/products/:uuid"
           }         
         ]
     }

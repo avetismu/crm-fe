@@ -8,6 +8,8 @@ import { AppDispatch } from '../../store/store';
 import { contactsSelector } from '../../store/contactsSlice';
 import CompanyFormComponent from '../Form/Company/CompanyFormComponent';
 import ContactFormComponent from '../Form/Contact/ContactFormComponent';
+import ProductFormComponent from '../Form/Product/ProductFormComponent';
+import { editProduct, formProductSelector } from '../../store/productFormSlice';
 
 
 interface EditComponentProps {
@@ -19,12 +21,12 @@ const EditComponent: React.FC<EditComponentProps> = (props) => {
     // Define your state and event handlers here
     const dispatch = useDispatch();
     const appDispatch = useDispatch<AppDispatch>();
-    const EditSelector = useSelector(editSelector)
 
-    const ContactsSelector = useSelector(contactsSelector);
+    const EditSelector = useSelector(editSelector)
 
     const FormContactSelector = useSelector(formContactSelector)
     const FormCompanySelector = useSelector(formCompanySelector)
+    const FormProductSelector = useSelector(formProductSelector)
 
     const getEditForm = (editType: EditType | undefined): ReactNode => {
         switch(editType){
@@ -33,6 +35,9 @@ const EditComponent: React.FC<EditComponentProps> = (props) => {
 
             case EditType.Companies:
                 return <CompanyFormComponent/>
+
+            case EditType.Products:
+                return <ProductFormComponent/>
         }
     }
 
@@ -43,6 +48,9 @@ const EditComponent: React.FC<EditComponentProps> = (props) => {
                 break;
             case EditType.Companies:
                 appDispatch(editCompany(FormCompanySelector.formCompany))
+                break;
+            case EditType.Products:
+                appDispatch(editProduct(FormProductSelector.formProduct))
         
         }
     }
@@ -56,7 +64,12 @@ const EditComponent: React.FC<EditComponentProps> = (props) => {
                 }
                 return true
             case EditType.Companies:
-                if(FormCompanySelector.formCompany.companyName === ""){
+                if(FormCompanySelector.formCompany.companyName === null || FormCompanySelector.formCompany.companyName === ""){
+                    return false
+                }
+                return true
+            case EditType.Products:
+                if(FormProductSelector.formProduct.sku === null ||FormProductSelector.formProduct.sku === ""){
                     return false
                 }
                 return true

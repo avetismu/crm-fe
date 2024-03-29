@@ -2,36 +2,34 @@ import React from "react"; // Import the useEffect hook
 import ContactsTableComponent from "../../components/Table/ContactTable/ContactTableComponent";
 import { Box, Button, Container, Grid, TextField, Typography } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { EditType, showEdit } from '../../store/editSlice'
 import { AddNewType, showAddNew } from "../../store/addNewSlice";
-import CompanyTableComponent from "../../components/Table/CompanyTable/CompanyTable";
 import { useParams } from "react-router-dom";
 import { ViewType, showView } from "../../store/viewSlice";
 import { AppDispatch } from "../../store/store";
-import { CompanyByNameProperty, fetchCompanies, getCompaniesByName, getCompanyByUUID } from "../../store/companiesSlice";
-import { Company } from "../../models/Company";
+import ProductTableComponent from "../../components/Table/ProductTable/ProductTable";
+import { fetchProducts, getProductByUUID, queryProduct } from "../../store/productsSlice";
 
 
-const CompanyPage: React.FC = () => {
+const ProductPage: React.FC = () => {
 
         const dispatch = useDispatch();
         const appDispatch = useDispatch<AppDispatch>();
         const params = useParams();
 
         if(params.uuid){
-                dispatch(showView(ViewType.Companies))
-                appDispatch(getCompanyByUUID(params.uuid))
+                dispatch(showView(ViewType.Products))
+                appDispatch(getProductByUUID(params.uuid))
         }
 
         const showAddNewForm = () =>{
-                dispatch(showAddNew(AddNewType.Companies))
+                dispatch(showAddNew(AddNewType.Products))
         }
 
-        const filterCompaniesByName = (query: string) : void => {
+        const filterProducts = (query: string) : void => {
                 if (query.length > 0)
-                        appDispatch(getCompaniesByName({query : query, property : CompanyByNameProperty.Companies}))
+                        appDispatch(queryProduct(query))
                 else
-                        appDispatch(fetchCompanies(1))
+                        appDispatch(fetchProducts(1))
         }
 
 
@@ -39,31 +37,31 @@ const CompanyPage: React.FC = () => {
                 <Container sx={{marginTop : "64px"}}>
                         <Box className="page-header-box">
                                 <Typography variant="h5" align="left" gutterBottom>
-                                        Companies
+                                        Products
                                 </Typography>
                                 <Grid container>
                                         <Grid md={6}>
                                                 <Grid container justifyContent="left">
                                                         <TextField
-                                                                id='filter-companies'
+                                                                id='filter-products'
                                                                 size="small"
-                                                                placeholder='Search Companies by Name'
+                                                                placeholder='Search Prodcuts by SKU, Code or Variant'
                                                                 sx={{width: '100%'}}
-                                                                onChange={(value) => filterCompaniesByName(value.target.value)}
+                                                                onChange={(value) => filterProducts(value.target.value)}
                                                         />
                                                 </Grid>
                                         </Grid>
                                         <Grid md={6}>
                                                 <Grid container justifyContent="end">
-                                                        <Button variant="outlined" onClick={() => showAddNewForm()}>Add New Company</Button>
+                                                        <Button variant="outlined" onClick={() => showAddNewForm()}>Add New Product</Button>
                                                 </Grid>
                                         </Grid>
                                 </Grid>
                         </Box>
-                        <CompanyTableComponent />
+                        <ProductTableComponent />
                 </Container>
                 
         )
 }
 
-export default CompanyPage
+export default ProductPage

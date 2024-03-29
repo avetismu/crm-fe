@@ -12,20 +12,26 @@ import { Company } from '../../models/Company';
 import { EditType, showEdit } from '../../store/editSlice';
 import { setFormContact } from '../../store/contactFormSlice';
 import { setFormCompany } from '../../store/companyFormSlice';
+import ViewProductComponent from './Product/ViewProductComponent';
+import DialogComponent from '../Dialog/DialogComponent';
+import { dialogSelector, hideDialog, showDialog } from '../../store/dialogSlice';
+import { useNavigate } from 'react-router-dom';
+import { setFormProduct } from '../../store/productFormSlice';
+import { Product } from '../../models/Product';
+import { deleteSelectedProduct, productsSelector } from '../../store/productsSlice';
 
-interface ViewComponentProps {
-    // Define your props here
-}
-
-const ViewComponent: React.FC<ViewComponentProps> = (props) => {
-    // Define your state and event handlers here
+const ViewComponent: React.FC = () => {
     const dispatch = useDispatch();
     const appDispatch = useDispatch<AppDispatch>();
     const selector = useSelector(viewSelector)
+    const DialogSelector = useSelector(dialogSelector)
+
+    const navigate = useNavigate();
     
 
     const selectedContact = useSelector(contactsSelector).selectedContact as Contact
     const selectedCompany = useSelector(companiesSelector).selectedCompany as Company
+    const selectedProduct = useSelector(productsSelector).selectedProduct as Product
 
     const getView = (viewType: ViewType | undefined): ReactNode => {
         switch(viewType){
@@ -33,6 +39,8 @@ const ViewComponent: React.FC<ViewComponentProps> = (props) => {
                 return <ViewContactComponent/>
             case ViewType.Companies:
                 return <ViewCompanyComponent/>
+            case ViewType.Products:
+                return <ViewProductComponent/>
         }
     }
 
@@ -43,6 +51,9 @@ const ViewComponent: React.FC<ViewComponentProps> = (props) => {
                 break;
             case ViewType.Companies:
                 appDispatch(deleteSelectedCompany(selectedCompany));
+                break;
+            case ViewType.Products:
+                appDispatch(deleteSelectedProduct(selectedProduct));
                 break;
         }
     }
@@ -58,9 +69,28 @@ const ViewComponent: React.FC<ViewComponentProps> = (props) => {
                 dispatch(showEdit(EditType.Companies));
                 dispatch(setFormCompany(Company.toFormCompany(selectedCompany)))
                 break;
+            case ViewType.Products:
+                dispatch(showEdit(EditType.Products));
+                dispatch(setFormProduct(Product.toFormProduct(selectedProduct)))
+                break;
         }
     }
 
+    
+    const navigateToPage = (viewType : ViewType | undefined) =>{
+        switch(viewType){
+            case ViewType.Contacts:
+                navigate('/contacts')
+                break;
+            case ViewType.Companies:
+                navigate('/companies')
+                break;
+            case ViewType.Products:
+                navigate('/products')
+                break;
+        }
+        dispatch(hideView());
+    }
 
 
     return (
@@ -78,9 +108,18 @@ const ViewComponent: React.FC<ViewComponentProps> = (props) => {
                         </Grid>
                         <Grid container justifyContent="center" sx={{marginTop:2}}>
                             <Button sx={{marginRight:1}} variant="text" onClick={()=> editRecord(selector.type)}>Edit</Button>
-                            <Button sx={{marginRight:1}} variant="outlined" color="error" onClick={() => deleteRecord(selector.type)}>Delete</Button>
-                            <Button variant="contained" onClick={()=>{dispatch(hideView())}}>Close</Button>
+                            <Button sx={{marginRight:1}} variant="outlined" color="error" onClick={() => {dispatch(showDialog())}}>Delete</Button>
+                            <Button variant="contained" onClick={()=> navigateToPage(selector.type)}>Close</Button>
                         </Grid>
+                        <DialogComponent
+                            affirmativeFC = {() => {
+                                deleteRecord(selector.type); 
+                                dispatch(hideDialog());
+                            }}
+                            negativeFC = {() => {dispatch(hideDialog())}}
+                            title = 'Delete Record'
+                            text = 'Are you sure you want to delete this record?'
+                        />
                     </Grid>
                 </Grid>
             </Fade>

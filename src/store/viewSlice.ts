@@ -37,7 +37,8 @@ export const viewSelector = (state: RootState) => state.view;
 
 export enum ViewType {
     Contacts,
-    Companies
+    Companies,
+    Products
 }
 
 const getTitle = (viewType: ViewType | undefined): string | undefined => {
@@ -49,6 +50,8 @@ const getTitle = (viewType: ViewType | undefined): string | undefined => {
             return 'View Contact';
         case ViewType.Companies:
             return 'View Company';
+        case ViewType.Products:
+            return 'View Product';
         default:
             return undefined;
     }

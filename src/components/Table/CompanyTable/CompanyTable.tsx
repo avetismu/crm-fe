@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch } from '../../store/store';
-import { contactsSelector, fetchContacts, setSelectedContact } from '../../store/contactsSlice';
+import { AppDispatch } from '../../../store/store';
+import { contactsSelector, fetchContacts, setSelectedContact } from '../../../store/contactsSlice';
 import { DataGrid, GridCallbackDetails, GridColDef, GridEventListener, GridRenderCellParams, GridRowParams, GridTreeNodeWithRender, GridValueGetterParams, MuiEvent } from '@mui/x-data-grid';
-import Flag from '../../utils/flags.util'
+import Flag from '../../../utils/flags.util'
 import { Box, Grid, Typography } from '@mui/material';
-import getCountryPhoneAreaCode from '../../utils/countryPhoneAreaCode';
-import { ViewType, showView } from '../../store/viewSlice';
-import { companiesSelector, fetchCompanies, setSelectedCompany } from '../../store/companiesSlice';
+import getCountryPhoneAreaCode from '../../../utils/countryPhoneAreaCode';
+import { ViewType, showView } from '../../../store/viewSlice';
+import { companiesSelector, fetchCompanies, setSelectedCompany } from '../../../store/companiesSlice';
 import { useNavigate } from 'react-router-dom';
-import { formatAddress } from '../../utils/formatAddress';
+import { formatAddress } from '../../../utils/formatAddress';
 
 interface Column {
     id: 'name' | 'email' | 'phone' | 'location' | 'type' | 'contact_method' | 'last_contacted';
