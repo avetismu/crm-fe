@@ -1,10 +1,10 @@
 import React from "react"; // Import the useEffect hook
-import ContactsTableComponent from "../../components/ContactTable/ContactTableComponent";
+import ContactsTableComponent from "../../components/Table/ContactTable/ContactTableComponent";
 import { Box, Button, Container, Grid, TextField, Typography } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { EditType, showEdit } from '../../store/editSlice'
 import { AddNewType, showAddNew } from "../../store/addNewSlice";
-import CompanyTableComponent from "../../components/CompanyTable/CompanyTable";
+import CompanyTableComponent from "../../components/Table/CompanyTable/CompanyTable";
 import { useParams } from "react-router-dom";
 import { ViewType, showView } from "../../store/viewSlice";
 import { AppDispatch } from "../../store/store";

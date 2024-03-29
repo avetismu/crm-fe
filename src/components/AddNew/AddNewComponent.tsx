@@ -7,6 +7,8 @@ import { createContact, formContactSelector, resetFormContact } from '../../stor
 import { createCompany, formCompanySelector, resetFormCompany } from '../../store/companyFormSlice';
 import CompanyFormComponent from '../Form/Company/CompanyFormComponent';
 import ContactFormComponent from '../Form/Contact/ContactFormComponent';
+import { createProduct, formProductSelector, resetFormProduct } from '../../store/productFormSlice';
+import ProductFormComponent from '../Form/Product/ProductFormComponent';
 
 const AddNewComponent: React.FC = () => {
     // Define your state and event handlers here
@@ -16,6 +18,7 @@ const AddNewComponent: React.FC = () => {
 
     const FormContactSelector = useSelector(formContactSelector)
     const FormCompanySelector = useSelector(formCompanySelector)
+    const FormProductSelector = useSelector(formProductSelector)
 
     const getNewForm = (addNewType: AddNewType | undefined): ReactNode => {
         switch(addNewType){
@@ -23,6 +26,8 @@ const AddNewComponent: React.FC = () => {
                 return <ContactFormComponent/>
             case AddNewType.Companies:
                 return <CompanyFormComponent/>
+            case AddNewType.Products:
+                return <ProductFormComponent/>
         }
     }
 
@@ -33,6 +38,10 @@ const AddNewComponent: React.FC = () => {
                 break;
             case AddNewType.Companies:
                 appDispatch(createCompany(FormCompanySelector.formCompany))
+                break;
+            case AddNewType.Products:
+                appDispatch(createProduct(FormProductSelector.formProduct))
+                break;
         
         }
 
@@ -47,7 +56,12 @@ const AddNewComponent: React.FC = () => {
                 }
                 return true
             case AddNewType.Companies:
-                if(FormCompanySelector.formCompany.companyName === ""){
+                if(FormCompanySelector.formCompany.companyName === null || FormCompanySelector.formCompany.companyName === ""){
+                    return false
+                }
+                return true
+            case AddNewType.Products:
+                if(FormProductSelector.formProduct.sku === null ||FormProductSelector.formProduct.sku === ""){
                     return false
                 }
                 return true
@@ -63,6 +77,9 @@ const AddNewComponent: React.FC = () => {
                 break;
             case AddNewType.Companies:
                 dispatch(resetFormCompany())
+                break;
+            case AddNewType.Companies:
+                dispatch(resetFormProduct())
                 break;
         }
     }
