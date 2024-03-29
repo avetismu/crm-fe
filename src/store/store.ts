@@ -6,16 +6,22 @@ import viewSlice from './viewSlice';
 import companiesSlice from './companiesSlice';
 import contactFormSlice from './contactFormSlice';
 import companyFormSlice from './companyFormSlice';
+import productsSlice from './productsSlice';
+import productFormSlice from './productFormSlice';
+import dialogSlice from './dialogSlice';
 
 const store = configureStore({
     reducer: {
       contacts: contactsSlice,
       companies: companiesSlice,
+      products: productsSlice,
       edit : editSlice,
-      contactForm : contactFormSlice,
       addNew : addNewSlice,
       view : viewSlice,
-      companyForm : companyFormSlice
+      dialog : dialogSlice,
+      companyForm : companyFormSlice,
+      contactForm : contactFormSlice,
+      productForm : productFormSlice
     },
       
   })

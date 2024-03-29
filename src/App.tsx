@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import Router from './routes/router';
 import {
+  BrowserRouter,
   RouterProvider,
 } from "react-router-dom";
 import Navbar from './components/Navbar/Navbar';
@@ -11,6 +12,7 @@ import store from './store/store';
 import { Divider, Drawer, List, ListItemButton, ListItemIcon, ListItemText, Toolbar } from '@mui/material';
 import ContactPageIcon from '@mui/icons-material/ContactPage';
 import BusinessIcon from '@mui/icons-material/Business';
+import InventoryIcon from '@mui/icons-material/Inventory';
 import EditComponent from './components/Edit/EditComponent';
 import AddNewComponent from './components/AddNew/AddNewComponent';
 import { LocalizationProvider } from '@mui/x-date-pickers';
@@ -23,6 +25,7 @@ function App() {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Provider store={store}>
+        <RouterProvider router={router}/>
         <div className="App">
           <Navbar></Navbar>
           <Drawer
@@ -51,13 +54,22 @@ function App() {
                   Companies
                 </ListItemText>
               </ListItemButton>
+              <ListItemButton  LinkComponent='a' href='/products'>
+                <ListItemIcon>
+                  <InventoryIcon/>
+                </ListItemIcon>
+                <ListItemText>
+                  Products
+                </ListItemText>
+              </ListItemButton>
             </List>
             <Divider/>
           </Drawer>
-          <RouterProvider router={router}/>
-          <EditComponent/>
-          <AddNewComponent/>
-          <ViewComponent/>
+          <BrowserRouter>
+            <EditComponent/>
+            <AddNewComponent/>
+            <ViewComponent/>
+          </BrowserRouter>
         </div>
       </Provider>
     </LocalizationProvider>

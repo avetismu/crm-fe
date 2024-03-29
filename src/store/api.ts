@@ -5,6 +5,9 @@ import { Company } from '../models/Company';
 import { CreateCompanyDto } from './dto/create.company.dto';
 import { UpdateContactDTO } from './dto/update.contact.dto';
 import { UpdateCompanyDto } from './dto/update.company.dto';
+import { Product } from '../models/Product';
+import { CreateProductDto } from './dto/create.product.dto';
+import { UpdateProductDto } from './dto/update.product.dto';
 
 const BASE_URL = process.env.REACT_APP_API;
 
@@ -22,6 +25,14 @@ const CREATE_COMPANY = '/companies/create';
 const UPDATE_COMPANY = '/companies/'
 const DELETE_COMPANY = '/companies/'
 
+const GET_PRODUCTS_ALL = '/products/all';
+const GET_QUERY_PRODUCT = '/products/query/';
+const GET_PRODUCTS_BY_NAME = '/products/by_name/';
+const GET_PRODUCT_BY_UUID = '/products/';
+const CREATE_PRODUCT = '/products/create';
+const UPDATE_PRODUCT = '/products/'
+const DELETE_PRODUCT = '/products/'
+
 
 export const enum API_STATE {
     LOADING = 'loading',
@@ -33,6 +44,8 @@ export const enum API_STATE {
 const userAPI = axios.create({
     baseURL: BASE_URL,
 });
+
+/* Contact */
 
 export const fetchContactsAsync = async (page : Number) => {
     try {
@@ -92,6 +105,8 @@ export const deleteSelectedContactAsync = async (contact : Contact) => {
 
 }
 
+/* Company */
+
 export const fetchCompaniesAsync = async (page : Number) => {
     try {
         const response = await userAPI.get(GET_COMPANIES_ALL);
@@ -146,5 +161,67 @@ export const deleteSelectCompanyAsync = async (company : Company) => {
         return response.data;
     } catch (error) {
         throw new Error('Failed to delete contact.');
+    }
+}
+
+/* Product */
+
+export const fetchProductsAsync = async (page : Number) => {
+    try {
+        const response = await userAPI.get(GET_PRODUCTS_ALL);
+        return response.data;
+    } catch (error) {
+        throw new Error('Failed to fetch products.');
+    }
+}
+
+export const queryProductAsync = async (query : string) => {
+    try {
+        const response = await userAPI.get(GET_QUERY_PRODUCT + `${query}`);
+        return response.data;
+    } catch (error) {
+        throw new Error('Failed to query products.');
+    }
+
+}
+
+/* Product */
+
+export const createProductAsync = async (product : Product) => {
+    try {
+        const createProductDto = CreateProductDto.fromProduct(product);
+        const response = await userAPI.post(CREATE_PRODUCT, createProductDto);
+        return response.data;
+    } catch (error) {
+        throw new Error('Failed to create product.');
+    }
+}
+
+
+export const editProductAsync = async (product : Product) => {
+    try {
+        const updateProductDto = UpdateProductDto.fromProduct(product);
+        const response = await userAPI.patch(UPDATE_PRODUCT + updateProductDto.uuid, updateProductDto);
+        return response.data;
+    } catch (error) {
+        throw new Error('Failed to udpate product.');
+    }
+}
+
+export const getProductByUUIDAsync = async (uuid : string) => {
+    try {
+        const response = await userAPI.get(GET_PRODUCT_BY_UUID + `${uuid}`);
+        return response.data;
+    } catch (error) {
+        throw new Error('Failed to find product by uuid.');
+    }
+};
+
+export const deleteSelectProductAsync = async (product : Product) => {
+    try {
+        const response = await userAPI.delete(DELETE_PRODUCT + `${product.uuid}`);
+        return response.data;
+    } catch (error) {
+        throw new Error('Failed to delete product.');
     }
 }

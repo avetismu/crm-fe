@@ -37,7 +37,8 @@ export const addNewSelector = (state: RootState) => state.addNew;
 
 export enum AddNewType {
     Contacts,
-    Companies
+    Companies,
+    Products
 }
 
 const getTitle = (addNewType : AddNewType | undefined) : string | undefined => {
@@ -50,6 +51,8 @@ const getTitle = (addNewType : AddNewType | undefined) : string | undefined => {
             return 'Add New Contact'
         case AddNewType.Companies:
             return 'Add New Company'
+        case AddNewType.Products:
+            return 'Add New Product'
         default:
             return undefined
     }
